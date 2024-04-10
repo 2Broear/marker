@@ -4,22 +4,22 @@ a local-storage(php based) javascript api marking-off plugin.
 #### 功能简介
 
 - 多人划线标记
-- 用户本地+远程验证
-- 划线标记、引用、复制
+- 标记引用、复制
+- 用户本地+远程校验
+- 本地储存验证记录
 - 自定义初始化参数
-- 本地储存记录
 
 ![marker](https://raw.githubusercontent.com/2Broear/marker/main/marker.gif "marker.gif")
 
 ## 使用说明
-可 _手动_ 加载 `main.js` 脚本后完成初始化（也可在前端中使用异步 `xhr` 加载后完成初始化），默认脚本与目录中的 `md5.js` 、 `mark.php` 处于同一目录（可手动携带指定目录参数）：
+可 _手动_ 加载 `marker.js` 脚本后初始化，也可异步 `xhr` 加载完成初始化：
 
 ```javascript
 new marker.init();
 ```
 
 ### 初始化参数（可选）
-初始化时，可携带部分对象参数以重载默认配置，常用配置项如下列表所示（`a->b` 表示对象 `a` 的子对象 `b`）：
+初始化时，可携带部分对象参数以重载默认配置，常用配置项如下列表所示：
 
 #### static-> 静态参数
 
@@ -76,17 +76,17 @@ new marker.init();
 #### element-> 元素参数
 | 参数 | 类型 | 描述 | 备注 |
 | :---- | :---- | :---- | :---- |
-| effectsArea | HTMLElement | 指定可选元素范围（可配合 class->blackList 使用） | 缺省 `document` |
+| effectsArea | HTMLElement | 指定可选元素范围 | 缺省 `document` |
 | commentArea | HTMLElement | 评论框（textarea） | 缺省 `null` |
-| commentInfo->userNick | HTMLElement | 昵称框（input） | 缺省 `null` |
-| commentInfo->userMail | HTMLElement | 邮箱框（input） | 缺省 `null` |
+| commentInfo -> userNick | HTMLElement | 昵称框（input） | 缺省 `null` |
+| commentInfo -> userMail | HTMLElement | 邮箱框（input） | 缺省 `null` |
 
 ### 增查删改（可选）
-完成初始化后，可通过 `data` 接口指定以下对象参数以查询（getter）或更新（setter）当前已储存数据，如下所示：
+完成初始化后，可通过 `data` 接口查询（getter）或更新（setter）已储存数据，如下所示：
 
 ```javascript
 // getter
-marker.data;
+marker.data; // all data
 marker.data.nick;  // ""
 
 // setter
@@ -105,44 +105,43 @@ marker.data.nick;  // "test"
         mid: "",  // 用户邮件 md5
     },
     stat: {
-        counts: 0,  // 用户（本地）已标记数量（动态）
+        counts: 0,  // 用户（本地）已标记数量（动态，可写）
         pending: 0,  // 当前标记状态（1：标记中）
     },
     list: {},  // 用户标记记录
-    path: "",  // 当前标记页面（可用于唯一ID，默认 window.location.pathname）
+    path: window.location.pathname,  // 当前标记页面（可用于 static->postID 作为标识符使用）
     _caches: "{}",  // 本地所有已标记 ts 验证记录（永久保存）
-    _counts: 0,  // 用户（服务端）已标记数量（静态，不可写）
+    _counts: 0,  // 用户（远程）已标记数量（静态，不可写）
 }
 ```
 
 </details>
 
-#### 携带参数初始化示例
+#### 携带参数初始化（示例）
 
 ```javascript
 // 自定义参数对象（常用）
 const custom_args = {
     static: {
-        dataMin: 10, // 最少选中 10 个字符触发标记
-        dataMax: 5, // 每篇文章至多可标记 5 个
-        dataAlive: 30, // 每个标记最多可保留 30 天
+        dataMin: 10, // 至少选中 10 个字符标记
+        dataMax: 5, // 每篇文章至多 5 个标记
+        dataAlive: 30, // 每个标记至多保留 30 天
         dataDelay: 0, // 无延迟标记
         lineColor: 'red', // 红色标记
         lineColors: 'transparent', // 红色渐变到 —> 透明
-        lineDegrees: 90, // 渐变角度：90
+        lineDegrees: 90, // 渐变角度旋转 90°
         lineBold: 10, // 使用更细线标记
         lineBoldMax: 100, // 标记线全覆盖文本（悬浮）
         lineAnimate: false, // 关闭划线动画
         apiUrl: "<?php echo get_bloginfo('template_directory'); ?>/plugin/mark.php", // 假设文件处于 plugin 目录）
         md5Url: "<?php echo get_bloginfo('template_directory'); ?>/js/md5.js", // 假设文件处于 js 目录）
-        postId: <?php echo $post->ID; ?>, // wordpress 文章唯一ID
-        avatar: "//gravatar.cn/", // 使用默认 cravatar 源
+        postId: <?php echo $post->ID; ?>, // 使用 wordpress 文章ID
     },
     class: {
-        blackList: ['chatGPT','article_index','ibox'], // 不可选中元素
+        blackList: ['chatGPT','article_index','ibox'], // 不可标记元素
     },
     element: {
-        effectsArea: document.querySelector('.content'), // 仅可选择 ".content" 元素区域
+        effectsArea: document.querySelector('.content'), // 可标记 ".content" 元素区域
         commentArea: document.querySelector('#vcomments textarea'), // 评论框
         commentInfo: {
             userNick: document.querySelector('#vcomments input[name=nick]'), // 用户昵称框

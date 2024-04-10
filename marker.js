@@ -3,22 +3,22 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
-                    _element = _conf.element;
-                const marks = document.createElement("a"),
-                      tools = document.createElement("div"),
-                      sty = document.createElement('style');
+                    _element = _conf.element,
+                    marks = document.createElement("a"),
+                    tools = document.createElement("div"),
+                    style = document.createElement('style');
                 marks.className = c_line;
                 marks.href = 'javascript:;';
                 marks.rel = 'nofollow';
                 tools.className = c_tool; // tools.setAttribute('onselectstart','return false;');
                 tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
                 if(s_lineAnimate) {
-                    sty.textContent = `@keyframes ${c_aniUnderline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_aniProcess}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
+                    style.textContent = `@keyframes ${c_aniUnderline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_aniProcess}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 }
-                sty.textContent += `
+                style.textContent += `
                     a.${c_line}.${c_done}{animation:none;-webkit-animation:none;transition:none;}
                     a.${c_line}:hover,a.${c_line}.${c_done}{background-size:100% ${s_lineBoldMax}%;}
                     a.${c_line}:hover{color:inherit!important;}
@@ -45,7 +45,7 @@
                     a.${c_line} .${c_tool} span.${c_close}:hover{transform:scale(1.25);-webkit-transform:scale(1.25)}
                     a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border-radius:50%;position:absolute;top:-5px;right:-5px;}
                 `;
-                document.head.appendChild(sty);
+                document.head.appendChild(style);
                 _element.tool = tools; //e_tool
                 _element.line = marks; //e_line
                 // fetch data.
@@ -54,16 +54,12 @@
                 }, (res)=> {
                     console.log('load marker from remote', res);
                     // user identification.. (MUST before output all keys for the first-time user-mid gets)
-                    const {code, msg = 'no message found.'} = res,
-                          {_utils: {_etc}} = marker;
-                    let _res_failure = code && code!==200,
-                        _status = marker.status,
-                        _md5update = (callback)=> {
+                    let _md5update = (callback)=> {
                             let userinfo = {
                                     nick: e_userNick.value,
                                     mail: e_userMail.value,
                                 },
-                                execUpdate = (userinfo, cbk)=> {
+                                _execUpdate = (userinfo, cbk)=> {
                                     userinfo.mid = md5(userinfo.mail);
                 			        // store userinfo(d_mid for currentUserCounts verification
             			            marker.data = userinfo;
@@ -71,21 +67,20 @@
                                     setCookie(s_userNick, userinfo.nick);
                                     setCookie(s_userMail, userinfo.mail);
                                     setCookie(s_userMid, userinfo.mid);
-                                    if(_etc.funValidator(cbk)) {
-                                        cbk();
-                                    }
+                                    if(funValidator(cbk)) cbk();
                                 };
                             if(typeof md5 === 'undefined') {
                                 console.log('init md5..');
-                                _etc.dynamicLoad(s_md5Url, ()=>execUpdate(userinfo, callback));
+                                dynamicLoad(s_md5Url, ()=>_execUpdate(userinfo, callback));
                             }else{
                                 console.log('md5 initiated, updating records..');
-                                execUpdate(userinfo, callback);
+                                _execUpdate(userinfo, callback);
                             }
                         },
                         _outputMarkers = ()=> {
+                            const {code, msg = 'no message found.'} = res;
                             const localMarks = Object.keys(d_list);
-                            if(_res_failure) {
+                            if(code && code!==200) {
                                 console.log('Abort on _outputMarkers:', msg);
                                 if(localMarks.length > 0) {
                                     // clear all local-data
@@ -96,7 +91,7 @@
                                 }
                                 return;
                             }
-                            // 输出所有服务端标记（未检验）
+                            // 输出所有服务端标记（未校验）
                             Object.keys(res).forEach(user=> {
                                 let each_mark = res[user];
                                 if(each_mark==null) return;
@@ -121,16 +116,16 @@
                                         mark_index = mark_indexes[1],
                                         mark_paragraph = e_effectsArea.children[mark_index];
                                     if(!mark_paragraph.textContent.includes(text)){
-                                        console.log('mark_uid('+mark_index+') with diff records(perhaps content changed), traversal all nodes..');
-                                        const effectsArea_childs = e_effectsArea.children;
-                                        for (let i=0;i<effectsArea_childs.length;i++) {
-                                            if(effectsArea_childs[i].textContent.includes(text)) {
+                                        console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
+                                        const effectChildNodes = e_effectsArea.children;
+                                        for (let i=0;i<effectChildNodes.length;i++) {
+                                            if(effectChildNodes[i].textContent.includes(text)) {
                                                 mark_index = i;
                                                 break;
                                             }
                                         }
-                                        mark_paragraph = effectsArea_childs[mark_index];
-                                        console.log('search done! found(firstIndexOf) on mark_uid('+mark_index+')');
+                                        mark_paragraph = effectChildNodes[mark_index];
+                                        console.log(`traversal done. found(indexOf ${text}) on mark_uid:`, mark_index);
                                     }
                                     tool_avatar.alt = nick;
                                     tool_avatar.src = `${s_avatar}avatar/${user}?d=mp&s=100&v=1.3.10`;
@@ -148,24 +143,21 @@
                                     mark_paragraph.innerHTML = mark_paragraph.innerHTML.replace(specific_chars, frag_mark.outerHTML);
                                 });
                             });
-                            const curUserMarks = res[d_mid],
-                                  dataPrefix = s_dataPrefix;
+                            const curUserMarks = res[d_mid];
                             // 返回本地记录中不存在于远程记录的元素（始终检验）
                             if(localMarks.length > 0) {
-                                const existNonDeletedMarks = localMarks.filter(local => {
+                                let existNonDeletedMarks = localMarks.filter(local => {
                                     // localNotInRemote: delete local marks which is non-existent from remote
-                                    let localNotInRemote = !curUserMarks.some(remote => {
-                                            return local === dataPrefix + remote.rid;
-                                        });
-                                    // console.log('localNotInRemote:', localNotInRemote);
+                                    const localNotInRemote = !curUserMarks.some(remote => {
+                                              return local === s_dataPrefix + remote.rid;
+                                          });
                                     return localNotInRemote;
                                 });
                                 if(existNonDeletedMarks.length > 0) {
                                     existNonDeletedMarks.forEach(mark=> {
                                         console.log(`a local marker was found on non-existent remoteMarks(perhaps server delays), del cookie(${mark}: ${getCookie(mark)}) from local..`, '(existNonDeletedMarks: slow-down the frequency!)');
                                         // update(del) local-record
-                                        delCookie(mark, d_path);
-                                        // no need for dom changes
+                                        delCookie(mark, d_path); // no need for dom changes
                                     });
                                 }else{
                                     console.log('remoteMarks: ALL MATCHED');
@@ -175,29 +167,27 @@
                             if(curUserMarks) {
                                 // 返回数据（已响应）——>对比本地记录（未匹配到本地记录）——>新增本地记录
                                 if(curUserMarks.length > 0) {
-                                    const existNonUpdatedMarks = curUserMarks.filter(remote => {
-                                        let remote_mark = dataPrefix + remote.rid;
+                                    let existNonUpdatedMarks = curUserMarks.filter(remote => {
                                         // remoteNotInLocal: delete remote marks which is non-existent from local
-                                        let remoteNotInLocal = !localMarks.some(local_mark => {
-                                                return remote_mark === local_mark;
-                                            });
-                                        // console.log('remoteNotInLocal:', remoteNotInLocal);
+                                        const remote_mark = s_dataPrefix + remote.rid,
+                                              remoteNotInLocal = !localMarks.some(local_mark => {
+                                                  return remote_mark === local_mark;
+                                              });
                                         return remoteNotInLocal;
                                     });
                                     if(existNonUpdatedMarks.length > 0) {
                                         existNonUpdatedMarks.forEach(marks=> {
                                             const mark_rid = marks.rid,
-                                                  mark_cname = dataPrefix + mark_rid,
+                                                  mark_cname = s_dataPrefix + mark_rid,
                                                   ts_caches = JSON.parse(d_caches),
                                                   cached_ts = ts_caches[mark_cname];
                                             // update localMarks only if localStorage exists(incase of any other user device get involved)
                                             if(cached_ts) {
                                                 console.log(`a remote marker(${mark_cname}: ${cached_ts}) was found on non-existent localMarks(perhaps server delays), add cookie to local..`, '(existNonUpdatedMarks: slow-down the frequency!)');
                                                 // update(add) local-data instantly
-                                                setCookie(mark_cname, cached_ts, d_path, s_dataAlive);
-                                                // dom changes(no longer needed)
+                                                setCookie(mark_cname, cached_ts, d_path, s_dataAlive); // dom changes(no longer needed)
                                             }else{
-                                                console.log(`marker(${mark_rid}) belongs to another device(not found on localStorage!)`);
+                                                console.log(`marker(${mark_rid}) belongs to another device(localStorage not found)`);
                                             }
                                         });
                                     }else{
@@ -207,12 +197,12 @@
                             }
                         };
                     // re-update on userinfo->mail changed.
-                    if(_status.isMarkerUserUpdate()) {
+                    if(isMarkerUserUpdate()) {
                         _md5update(_outputMarkers);
                         console.log(`marker user updated: ${e_userMail.value} (counts: ${d_counts})`);
                     }else{
                         // abort on userinfo exists
-                        if(!_status.isMarkerAccessable() && e_userMail.value){
+                        if(!isMarkerAccessable() && e_userMail.value){
                             _md5update(_outputMarkers);
                             console.log(`marker user inited. (counts: ${d_counts})`);
                         }else{
@@ -263,13 +253,6 @@
                 getTarget: (event)=> {
                     return event.target || window.srcElement;
                 },
-                preventDefault: (event)=> {
-                    if(event.preventDefault){
-                        event.preventDefault();
-                    }else{
-                        event.returnValue = false;
-                    }
-                },
             },
             _closure: {
                 debouncer: (callback=false, delay=200)=> {
@@ -312,10 +295,9 @@
                     return "";
                 },
                 del: function(name, path='/') {
-                    const {get:getCookie} = marker._utils._cookie;
                     var exp = new Date();
                     exp.setTime(exp.getTime() - 1);
-                    var cval = getCookie(name); // that = this&&this.get ? this : marker._utils._cookie;
+                    var cval = marker._utils._cookie.get(name); // that = this&&this.get ? this : marker._utils._cookie;
                     if(cval!=null){
                         document.cookie = name+"="+cval+";expires="+exp.toGMTString()+";path="+path;
                     }
@@ -323,11 +305,16 @@
             },
             _dom: {
                 valider: (node, textNode=true) => {
-                    let valid_node = node && node instanceof HTMLElement;
+                    const valid_node = node && node instanceof HTMLElement;
                     return textNode ? valid_node && node.nodeType===1 : valid_node;
                 },
                 indexer: (node=null)=> {
-                    return node ? Array.prototype.indexOf.call(node.parentElement.children, node) : 0;
+                    const valider = marker._utils._dom.valider;
+                    if(!valider(node)) {
+                        return 0;
+                    }
+                    const parentNode = node.parentElement;
+                    return valider(parentNode) ? Array.prototype.indexOf.call(parentNode.children, node) : 0;
                 },
                 finder: (element=null, className='', mod=0, tagName="")=> {
                     if (mod === '' || typeof mod !== 'number') {
@@ -383,8 +370,7 @@
                         return randomStr.substring(2, randomStr.length);
                     }
                 },
-                paramsParser: function(obj, post=false) {
-                    // console.log(this);
+                paramParser: function(obj, post=false) {
                     if(post && marker._utils._etc.isObject(obj)) {
                         return obj;
                     }
@@ -447,8 +433,7 @@
                 assert: function(conditions=true, message='', logType=false, report=false) {
                     if(conditions) return;
                     if(typeof logType==='string') {
-                        const {debugger:_debugger} = marker._utils._etc;
-                        _debugger(conditions, logType);
+                        marker._utils._etc.debugger(conditions, logType);
                     }
                     if(typeof message==='string'){
                         let err = new Error(message);
@@ -469,8 +454,7 @@
                             break;
                         case typeof console==='object':
                         default:
-                            const {assert} = marker._utils._etc;
-                            assert(typeof console[type]==='function', 'invalid console type.');
+                            marker._utils._etc.assert(typeof console[type]==='function', 'invalid console type.');
                             console[type](msg);
                             break;
                     }
@@ -479,27 +463,27 @@
         },
         status: {
             isMarkerAvailable: (anonymous=false)=> {
-                let valid_status = true;
+                let valid_statu = true;
                 if(!anonymous) {
-                    const {commentInfo:e_commentInfo} = marker.init._conf.element;
-                    const userinfo = Object.entries(e_commentInfo);
+                    const commentInfo = marker.init._conf.element.commentInfo;
+                    const userinfo = Object.entries(commentInfo);
                     for(let i=0;i<userinfo.length;i++){
                         let key = userinfo[i][0],
                             val = userinfo[i][1];
                         if(val==null){
-                            console.warn('Abort on '+key+': all commentInfo must be Specificed!', e_commentInfo);
-                            valid_status = false;
+                            console.warn('Abort on '+key+': all commentInfo must be Specificed!', commentInfo);
+                            valid_statu = false;
                         }else if(val.value==''){
                             console.warn(key+' required to be FullFilled to use marker.', val);
-                            valid_status = false;
+                            valid_statu = false;
                         }
                     }
                 }
-                return valid_status;
+                return valid_statu;
             },
             isMarkerAccessable: ()=> {
-                const {mail:d_mail} = marker.data.user;
-                return d_mail && d_mail !== "";
+                const mail = marker.data.user.mail;
+                return mail && mail !== "";
             },
             isMarkerUserUpdate: function() {
                 const {init: {_conf: {element: {commentInfo: {userMail:e_userMail}}}}, data: {user: {mail:d_mail}}, status:{isMarkerAccessable}} = marker;
@@ -546,7 +530,7 @@
                     console.warn('invalid nodes or classList', node);
                     return notOnList;
                 }
-                let blackTags = ['h1','h2','h3','h4','h5','h6','details','summary','code','mark','del'],
+                let blackTags = ['h1','h2','h3','h4','h5','h6','a','s','del','code','mark','details','summary'],
                     blackList = c_blackList instanceof Array ? c_blackList : [];
                 for(let i=0;i<blackTags.length;i++){
                     let blackTag = blackTags[i].toUpperCase();
@@ -569,12 +553,10 @@
                 return notOnList;
             },
             isNodeMarkAble: (node = null)=> {
-                const {line:c_line} = marker.init._conf.class;
-                return node&&node.classList&&node.classList.contains(c_line);
+                return node&&node.classList&&node.classList.contains(marker.init._conf.class.line);
             },
             isNodeMarkDone: (node = null)=> {
-                const {done:c_done} = marker.init._conf.class;
-                return node&&node.classList&&node.classList.contains(c_done);
+                return node&&node.classList&&node.classList.contains(marker.init._conf.class.done);
             },
             isNodeTextOnly: (node = null)=> {
                 const {init: {_conf: {class: {tool:c_tool}}}, _utils: {_dom: {valider}}} = marker;
@@ -593,8 +575,7 @@
                 return child_classes&&child_classes.contains(c_tool);
             },
             isMultiSameChar: (paragraph, context, vars=false)=> {
-                const {_utils: {_diy: {ctxIndexer}}} = marker;
-                const uniqune_char = ctxIndexer(paragraph, context);
+                const uniqune_char = marker._utils._diy.ctxIndexer(paragraph, context);
                 return vars ? uniqune_char : uniqune_char.length > 1;
             },
             _adjustPending: (status=0, callback=false, delay=0)=> {
@@ -639,7 +620,7 @@
                             break;
                     }
                     if(!isMarkerSelectable(contains_node)) {
-                        console.warn('unSelectable node.', contains_node);
+                        // console.warn('unSelectable node.', contains_node);
                         return;
                     }
                     if(isNodeMarkAble(contains_node) && isNodeMarkDone(contains_node)) {
@@ -930,7 +911,7 @@
                 });
             },
             fetch: (url='', _obj={}, cbk=false, cbks=false)=> {
-                const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user:d_user}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramsParser}}} = marker;
+                const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user:d_user}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramParser}}} = marker;
                 argsRewriter.call(marker, _obj, {
                     'pid': s_postId,
                     'fetch': 0,
@@ -941,7 +922,7 @@
                     "mail": d_user.mail,
                 }, (obj_)=> {
                     url = url || s_apiUrl;
-                    fetch(`${url}&${paramsParser(obj_)}`, {}).then(response => {
+                    fetch(`${url}&${paramParser(obj_)}`, {}).then(response => {
                         if(!response.ok) throw new Error('Network err');
                         return response.json();
                     }).then(data => {
@@ -1110,7 +1091,7 @@
                         if(!marker._utils._etc.isObject(opts)) return;
                         for(const [key, val] of Object.entries(opts)){
                             // back-write (mark non-existent property)
-                            let custom_conf = conf[key];
+                            const custom_conf = conf[key];
                             if(Array.isArray(val)){
                                 if(Array.isArray(custom_conf)){
                                     conf[key] = custom_conf.concat(val);
