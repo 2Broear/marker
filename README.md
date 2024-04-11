@@ -82,14 +82,14 @@ new marker.init();
 | commentInfo -> userMail | HTMLElement | 邮箱框（input） | 缺省 `null` |
 
 ### 增查删改（可选）
-完成初始化后，可通过 `data` 接口查询（getter）或更新（setter）已储存数据，如下所示：
+完成初始化后，可通过 `data` 接口查询（getter）或更新部分（setter）已储存数据，如下所示：
 
 ```javascript
 // getter
 marker.data; // all data
 marker.data.nick;  // ""
 
-// setter
+// setter（nick, mail, counts, pending, promised）
 marker.data = {nick: "test"};
 marker.data.nick;  // "test"
 ```
@@ -107,6 +107,7 @@ marker.data.nick;  // "test"
     stat: {
         counts: 0,  // 用户（本地）已标记数量（动态，可写）
         pending: 0,  // 当前标记状态（1：标记中）
+        promised: {},  // 当前 fetch 状态（promise）
     },
     list: {},  // 用户标记记录
     path: window.location.pathname,  // 当前标记页面（可用于 static->postID 作为标识符使用）

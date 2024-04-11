@@ -1,6 +1,6 @@
 <?php
     // 检查并返回 xhr 请求携带参数
-    function get_request_param(string $param){
+    function get_request_param(string $param) {
         $res = null;
         if(!isset($_REQUEST[$param])) return $res;
         switch (true) {
@@ -141,6 +141,7 @@
         }else{
             include CACHED_PATH; // 加载文件
             if(EXEC_fetch){
+                // sleep(1);
                 $cached_mark = purify_marker_data($cached_mark); // clear all unique id (no public exposed vars)
                 if(isset($cached_mark[SAVE_prefix])){
                     if(EXEC_count) {

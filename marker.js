@@ -35,7 +35,7 @@
                     a.${c_line} .${c_tool} span:hover{font-weight:bold;}
                     a.${c_line} .${c_tool} i,
                     a.${c_line}.${c_disabled} .${c_tool} span,
-                    a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;pointer-events:none;}
+                    a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;/*pointer-events:none;*/}
                     a.${c_line} .${c_tool} span{cursor:pointer;}
                     a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:12%;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
                     a.${c_line} .${c_tool} span.${c_close}::after{transform:translate(-50%,-50%) rotate(-45deg);}
@@ -93,18 +93,19 @@
                             }
                             // 输出所有服务端标记（未校验）
                             Object.keys(res).forEach(user=> {
-                                let each_mark = res[user];
-                                if(each_mark==null) return;
+                                let userMarks = Object.values(res[user]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
+                                // console.log(userMarks)
+                                if(!userMarks || userMarks==null) return;
                                 // compare curUserMid is curUser, then update currentUserCounts from remote
                                 if(d_mid === user){
                                     let _static = _conf.static,
-                                        remote_counts = res[user].length;
+                                        remote_counts = userMarks.length;
                                     _static.dataCount = remote_counts; //s_dataCount
                                     marker.data = {counts: remote_counts}; //s_dataCount
                                     // 冻结 _conf 对象 static 成员 for dataCount edit limits
                                     Object.freeze(_static);
                                 }
-                                each_mark.forEach(mark=> {
+                                userMarks.forEach(mark=> {
                                     const {nick, text, date, uid, rid} = mark;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
@@ -579,19 +580,20 @@
                 return vars ? uniqune_char : uniqune_char.length > 1;
             },
             _adjustPending: (status=0, callback=false, delay=0)=> {
+                const res_status = {pending: status};
                 if(callback){
                     const {init: {_conf: {static: {dataDelay:s_dataDelay}}}, _utils: {_etc: {funValidator}}} = marker;
                     // delay must under callback(always true on the outside)
                     delay = delay ? delay : s_dataDelay;
                     let timer = setTimeout(() => {
-                            marker.data = {pending: status}; // adjusting pending statu.
+                            marker.data = res_status; // adjusting pending statu.
                             if(funValidator(callback)) {
                                 callback();
                             }
                             clearTimeout(timer); // 在回调函数执行后清除 setTimeout
                         }, delay);
                 }else{
-                    marker.data = {pending: status}; // adjusting pending statu.
+                    marker.data = res_status; // adjusting pending statu.
                 }
             },
         },
@@ -834,7 +836,7 @@
                 }
             },
             update: function(updObj={}, cbk=false, del=false) {
-                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, get: delCookie}, _etc: {isObject, funValidator}}, status: {_adjustPending}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, del: delCookie}, _etc: {isObject, funValidator}}, status: {_adjustPending}, mods: {fetch}} = marker;
                 // changes required
                 let {counts:d_counts} = marker.data.stat;
                 if(!isObject(updObj) || Object.keys(updObj).length<1) {
@@ -909,28 +911,45 @@
                         funValidator(cbk) ? cbk(res) : console.log('update(add) succesed(no calls)', msg);
                     });
                 });
+                // Multi Same-fetch requests fire test..
+                // fetch(s_apiUrl, {'rid': rid,'uid': uid,"text": text,'ts': realtime_ts});
             },
             fetch: (url='', _obj={}, cbk=false, cbks=false)=> {
-                const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user:d_user}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramParser}}} = marker;
+                const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user: {nick:d_nick, mail:d_mail}, stat: {promised: d_promised}}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramParser}}} = marker;
                 argsRewriter.call(marker, _obj, {
                     'pid': s_postId,
                     'fetch': 0,
                     'count': 0,
                     'del': 0,
                     'ts': 0,
-                    "nick": d_user.nick,
-                    "mail": d_user.mail,
+                    "nick": d_nick,
+                    "mail": d_mail,
                 }, (obj_)=> {
-                    url = url || s_apiUrl;
-                    fetch(`${url}&${paramParser(obj_)}`, {}).then(response => {
+                    const params = '&'+paramParser(obj_);
+                    url = url ? url+params : s_apiUrl+params;
+                    const requestKey = JSON.stringify([url]);
+                    // 检查 promise 缓存
+                    if (d_promised[requestKey]) {
+                        console.log('Multi Same-fetch detected! Standby Promise..', d_promised[requestKey]);
+                        return;
+                    }
+                    const fetchPromise = fetch(url, {
+                        // method: type,
+                        // data: JSON.stringify(data)
+                    }).then(response => {
                         if(!response.ok) throw new Error('Network err');
                         return response.json();
-                    }).then(data => {
+                    }).then(data=> {
                         if(funValidator(cbk)) cbk(data);
-                    }).catch(error => {
-                        console.warn('fetch '+error);
+                    }).catch(error=> {
                         if(funValidator(cbks)) cbks(error);
+                    }).finally(() => {
+                        // 删除 promise 缓存
+                        delete d_promised[requestKey];
                     });
+                    // 更新 promise 缓存
+                    d_promised[requestKey] = fetchPromise;
+                    marker.data = {promised: d_promised};
                 });
             },
         },
@@ -968,32 +987,28 @@
             },
         },
         get data(){
-            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {list, nick, mail, mid, counts, pending}}}, _utils: {_cookie: {get: getCookie}}} = this;
+            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get: getCookie}}} = this;
+            const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
+                  stored = document.cookie.match(regExp) || [];
             let result = {};
-            if(list){
-                result = list;
-            }else{
-                const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
-                      stored = document.cookie.match(regExp) || [];
-                if(stored.length>=1){
-                    stored.map(item => {
-                        let pair = item.split("="),
-                            key = pair[0],
-                            val = pair[1].split(";")[0];
-                        // return { [key]: val, }; // 修改返回的对象结构 { key, val }
-                        result[key] = val; // 将键值对存入 result 对象中
-                    });
-                }
+            if(stored.length>=1){
+                stored.map(item => {
+                    let pair = item.split("="),
+                        key = pair[0],
+                        val = pair[1].split(";")[0];
+                    result[key] = val; // 将键值对存入 result 对象中
+                });
             }
             return {
                 'user': {
                     nick: getCookie(s_userNick) || nick,
                     mail: getCookie(s_userMail) || mail,
-                    mid: getCookie(s_userMid) || mid,
+                    mid: getCookie(s_userMid),
                 },
                 'stat': {
                     counts: counts || 0,
                     pending: pending || 0,
+                    promised: promised || {},
                 },
                 'list': result,
                 'path': window.location.pathname,
