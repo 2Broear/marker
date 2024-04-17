@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
                     _element = _conf.element,
@@ -28,8 +28,8 @@
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
                     body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: var(--preset-4a);background: -webkit-linear-gradient(90deg, var(--preset-3a) 0, var(--preset-4a));background: linear-gradient(0deg, var(--preset-3a) 0, var(--preset-4a));}
                     a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;max-width:100%;white-space:normal;margin:auto auto 10px;padding: 5px;color:gray;line-height:normal;font-weight:normal!important;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: lightgray transparent transparent transparent;border-width: 5px 5px 0 5px;position: inherit;left: 20px;bottom: -6px;z-index: 1;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;margin:auto auto 10px;padding: 5px;color:gray;line-height:18px;font-weight:normal;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: lightgray transparent transparent transparent;border-width: 6px 10px 0px 0px;position: inherit;left: 12px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note},
                     a.${c_line} .${c_tool} .${c_note} input,
                     a.${c_line} .${c_tool} .${c_note}:hover input{border: 1px solid lightgray;border-radius:5px;background:inherit;}
@@ -100,6 +100,7 @@
                                 }
                                 return;
                             }
+                            let _static = _conf.static;
                             // 输出所有服务端标记（未校验）
                             Object.keys(res).forEach(user=> {
                                 let userMarks = Object.values(res[user]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
@@ -107,8 +108,7 @@
                                 if(!userMarks || userMarks==null) return;
                                 // compare curUserMid is curUser, then update currentUserCounts from remote
                                 if(d_mid === user){
-                                    let _static = _conf.static,
-                                        remote_counts = userMarks.length;
+                                    let remote_counts = userMarks.length;
                                     _static.dataCount = remote_counts; //s_dataCount
                                     marker.data = {counts: remote_counts}; //s_dataCount
                                     // 冻结 _conf 对象 static 成员 for dataCount edit limits
@@ -118,10 +118,10 @@
                                     const {nick, text, date, uid, rid, note} = mark;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
-                                        frag_tool = tools.cloneNode(true),
-                                        tool_inside = frag_tool.querySelector(`.${c_toolIn}`),
-                                        tool_mark = frag_tool.querySelector(`.${c_mark}`),
-                                        tool_note = frag_tool.querySelector(`.${c_note}`),
+                                        frag_tool = tools.cloneNode(true), 
+                                        tool_inside = finder(frag_tool, c_toolIn, 1),
+                                        tool_mark = finder(frag_tool, c_mark, 1),
+                                        tool_note = finder(frag_tool, c_note, 1),
                                         tool_avatar = new Image(), //document.createElement('img'),
                                         mark_indexes = uid.match('(\\d+)-(\\d+)'),
                                         mark_index = mark_indexes[1],
@@ -150,12 +150,8 @@
                                     tool_mark.textContent = `${nick} ${s_ctxMarked}`;
                                     if(note&&note.length >= 1) {
                                         tool_mark.nextElementSibling.remove(); // "|"
-                                        // const tool_notes = tool_note.querySelector('input');
-                                        // tool_notes.style.width = `${note.length+1}em`;
-                                        // tool_notes.setAttribute('disabled', '');
-                                        // tool_notes.setAttribute('placeholder', note);
-                                        tool_note.querySelector('label').textContent = note;
-                                        tool_note.querySelector('input').remove();
+                                        finder(tool_note, "", 1, "label").textContent = note;
+                                        finder(tool_note, "", 1, "input").remove();
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
@@ -347,7 +343,7 @@
                     switch (mod) {
                         case 1:
                             let childElements = tagName ? element.getElementsByTagName(tagName) : element.getElementsByClassName(className);
-                            return childElements.length>0 ? childElements : null;
+                            return childElements.length>0 ? childElements[0] : null;
                         case 0:
                         default:
                             let parent = element.parentElement;
@@ -656,7 +652,7 @@
                     marks.dataset.rid = strGenerator();
                     range.surroundContents(marks);
                     // check marker is selectable
-                    const tool_mark = tools.querySelector(`.${c_mark}`),
+                    const tool_mark = finder(tools, c_mark, 1),
                           tool_disabled = tool_mark.classList.contains(c_disabled);
                     if(isMarkerReachedMax()){
                         // rewrite stored tools context only if tool_mark on enabled statu.(decreasing origin_mark dom edit)
@@ -716,7 +712,7 @@
                 }
             },
             down: function(node) {
-                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
+                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax, avatar:s_avatar}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled, toolIn:c_toolIn}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}, user: {nick:d_nick,mid:d_mid}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
                 if(d_pending) {
                     console.warn('Abort on too-fast marking off! (wait a second then try to re-mark again.)');
                     return;
@@ -740,16 +736,15 @@
                 }
                 // check on same-chars
                 let paragraph_context = mark_paragraph.textContent,
-                    mark_text = mark_node.firstChild.nodeValue,
-                    mark_note = mark_node.querySelector(`.${c_note} input`).value;
+                    mark_text = mark_node.firstChild.nodeValue;
                 if(isMultiSameChar(paragraph_context, mark_text)){
                     alert('Abort on multi Same-chars on current paragraph!' + isMultiSameChar(paragraph_context, mark_text, true));
                     return;
                 }
                 // compare local-counts(read only) for decreasing server_verify requests. (bug: read-only variables can not be updated instantly, always use server_verify)
                 const ifServerReachedMax = isMarkerReachedMax(true);
-                ifServerReachedMax.then(res=> {
-                    if(res) {
+                ifServerReachedMax.then(reach=> {
+                    if(reach) {
                         alert('Abort on reaching(server side) dataMax!');
                         node.textContent = s_ctxMarkMax;
                         node.classList.add(c_disabled);
@@ -758,24 +753,36 @@
                     }
                     // update to remote.
                     const mark_rid = mark_node.dataset.rid,
-                          mark_indexes = indexer(mark_paragraph) + '-' + paragraph_context.indexOf(mark_text);
-                    // let that = this&&this.update ? this : mods;
+                          mark_indexes = indexer(mark_paragraph) + '-' + paragraph_context.indexOf(mark_text),
+                          mark_note = finder(mark_node, c_note, 1),
+                          mark_input = finder(mark_note, "", 1, "input"),
+                          mark_inputs = mark_input.value;
+                    mark_note.nextElementSibling.remove(); // "|"
+                    if(valider(mark_input)&&mark_inputs.length >= 1) {
+                        finder(mark_note, "", 1, "label").textContent = mark_inputs;
+                        mark_input.remove();
+                    }else{
+                        mark_note.remove();
+                    }
                     update({
                         rid: mark_rid,
                         uid: mark_indexes,
                         text: mark_text,
-                        note: mark_note,
+                        note: mark_inputs,
                         node: node,
                     }, (res)=> {
                         // local updates (dom changes)
                         mark_node.classList.add(c_done);
-                        node.innerHTML = `<small>${s_ctxMarked}（${mark_rid}）</small>`;
-                        node.classList.add(c_disabled);
                         mark_node.dataset.uid = mark_indexes;
+                        const tool_inside = finder(mark_node, c_toolIn, 1),
+                              user_avatar = new Image();
+                        user_avatar.alt = d_nick;
+                        user_avatar.src = `${s_avatar}avatar/${d_mid}?d=mp&s=100&v=1.3.10`;
+                        tool_inside.insertBefore(user_avatar, node);
+                        node.classList.add(c_disabled);
+                        node.innerHTML = `${d_nick} ${s_ctxMarked}`;
                     });
-                }).catch(err=>{
-                    console.warn(err);
-                });
+                }).catch(err=>console.warn(err));
             },
             note: function(node) {
                 const {init: {_conf: {static: {ctxCopied:s_ctxCopied, ctxNote:s_ctxNote, ctxNoted:s_ctxNoted}, class: {line:c_line, note:c_note}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkDone}, mods: {close}} = marker;
@@ -783,8 +790,8 @@
                     return node;
                 }
                 const mark_node = finder(node, c_line),
-                      input_box = mark_node.querySelector(`.${c_note} input`),
-                      note_ctx = mark_node.querySelector(`.${c_note} label`);
+                      input_box = finder(mark_node, "", 1, "input"),
+                      note_ctx = finder(mark_node, "", 1, "label");
                 input_box.focus();
                 if(input_box.oninput) {
                     console.log('oninput registed.');
@@ -877,7 +884,7 @@
                 }
             },
             update: function(updObj={}, cbk=false, del=false) {
-                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, del: delCookie}, _etc: {isObject, funValidator}}, status: {_adjustPending}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, del: delCookie}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
                 // changes required
                 let {counts:d_counts} = marker.data.stat;
                 if(!isObject(updObj) || Object.keys(updObj).length<1) {
@@ -901,9 +908,7 @@
                         const {code, msg = 'no message found.'} = res;
                         if(code && code!=200){
                             alert(`${msg}（err#${code}）`);
-                            if(node&&node.classList) {
-                                node.classList.remove(cls);
-                            }
+                            if(node&&node.classList) node.classList.remove(cls);
                             marker.data = {counts: d_counts}; // restore counts on error
                             _adjustPending(0);  // pending abort..
                             return;
@@ -918,7 +923,6 @@
                     });
                     return;
                 }
-                
                 // addition load ts via real-time
                 const realtime_ts = Date.now();
                 // update currentUserCounts Immediately no mater backend-saved or not. (add/del dual check supported)
@@ -934,9 +938,7 @@
                     const {code, msg = 'no message found.'} = res;
                     if(code && code!=200){
                         alert(`${msg}（err#${code}）`);
-                        if(node) {
-                            node.textContent = s_ctxMarked;
-                        }
+                        if(node) node.textContent = s_ctxMarked;
                         marker.data = {counts: d_counts}; // restore counts on error
                         _adjustPending(0);  // pending abort..
                         return;
