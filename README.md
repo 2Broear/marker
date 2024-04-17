@@ -3,9 +3,9 @@ a local-storage(php based) javascript api marking-off plugin.
 
 #### 功能简介
 
-- 多人划线标记
-- 标记引用、复制
-- 用户本地+远程校验
+- 多人划线标记（注释）
+- 划线文本引用、复制
+- 用户本地 + 远程校验
 - 本地储存验证记录
 - 自定义初始化参数
 
@@ -49,6 +49,8 @@ new marker.init();
 | ctxMarking | String | 标记中文本 | 默认 `标记中` |
 | ctxMarked | String | 已标记文本 | 默认 `已标记` |
 | ctxMarkMax | String | 标记满文本 | 默认 `用户标记已满` |
+| ctxNote | String | 注释文本 | 默认 `注释` |
+| ctxNoted | String | 已注释文本 | 默认 `已注释` |
 | ctxCopy | String | 标记复制文本 | 默认 `复制` |
 | ctxCopied | String | 标记已复制文本 | 默认 `已复制` |
 | ctxQuote | String | 标记引用文本 | 默认 `引用` |

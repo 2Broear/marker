@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
                     _element = _conf.element,
@@ -14,7 +14,7 @@
                 marks.href = 'javascript:;';
                 marks.rel = 'nofollow';
                 tools.className = c_tool; // tools.setAttribute('onselectstart','return false;');
-                tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
+                tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释内容.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
                 if(s_lineAnimate) {
                     style.textContent = `@keyframes ${c_aniUnderline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_aniProcess}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 }
@@ -24,9 +24,18 @@
                     a.${c_line}:hover{color:inherit!important;}
                     a.${c_line}{color:inherit;text-decoration:none!important;background:-webkit-linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background:linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background-size:100% ${s_lineBold}%;transition:background-size .15s ease;animation:${c_aniUnderline} 1s 1 ease;-webkit-animation:${c_aniUnderline} 1s 1 ease;cursor:text;user-select:text;-webkit-user-drag:none;position:relative;}
                     a.${c_line}.${c_aniProcess} .${c_tool},
-                    a.${c_line}:hover .${c_tool}{padding-bottom:40px;opacity:1;}
+                    a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
+                    body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: var(--preset-4a);background: -webkit-linear-gradient(90deg, var(--preset-3a) 0, var(--preset-4a));background: linear-gradient(0deg, var(--preset-3a) 0, var(--preset-4a));}
                     a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;max-width:100%;white-space:normal;margin:auto auto 10px;padding: 5px;color:gray;line-height:normal;font-weight:normal!important;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: lightgray transparent transparent transparent;border-width: 5px 5px 0 5px;position: inherit;left: 20px;bottom: -6px;z-index: 1;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note},
+                    a.${c_line} .${c_tool} .${c_note} input,
+                    a.${c_line} .${c_tool} .${c_note}:hover input{border: 1px solid lightgray;border-radius:5px;background:inherit;}
+                    a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 3px 5px 2px;}
+                    a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .35s ease;border:none;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:lightgray!important;display:none;}
                     a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;margin: 5px 5px 5px 0!important;}
                     a.${c_line} .${c_tool} i{font-style:normal;}
                     a.${c_line} .${c_tool} i,
@@ -35,7 +44,7 @@
                     a.${c_line} .${c_tool} span:hover{font-weight:bold;}
                     a.${c_line} .${c_tool} i,
                     a.${c_line}.${c_disabled} .${c_tool} span,
-                    a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;/*pointer-events:none;*/}
+                    a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;pointer-events:none;}
                     a.${c_line} .${c_tool} span{cursor:pointer;}
                     a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:12%;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
                     a.${c_line} .${c_tool} span.${c_close}::after{transform:translate(-50%,-50%) rotate(-45deg);}
@@ -106,12 +115,13 @@
                                     Object.freeze(_static);
                                 }
                                 userMarks.forEach(mark=> {
-                                    const {nick, text, date, uid, rid} = mark;
+                                    const {nick, text, date, uid, rid, note} = mark;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
                                         frag_tool = tools.cloneNode(true),
-                                        tool_inside = frag_tool.querySelector('.'+c_toolIn),
-                                        tool_mark = frag_tool.querySelector('.'+c_mark),
+                                        tool_inside = frag_tool.querySelector(`.${c_toolIn}`),
+                                        tool_mark = frag_tool.querySelector(`.${c_mark}`),
+                                        tool_note = frag_tool.querySelector(`.${c_note}`),
                                         tool_avatar = new Image(), //document.createElement('img'),
                                         mark_indexes = uid.match('(\\d+)-(\\d+)'),
                                         mark_index = mark_indexes[1],
@@ -138,6 +148,18 @@
                                     frag_mark.title = `marked at ${date}`;
                                     tool_mark.className = `${c_mark} ${c_disabled}`;
                                     tool_mark.textContent = `${nick} ${s_ctxMarked}`;
+                                    if(note&&note.length >= 1) {
+                                        tool_mark.nextElementSibling.remove(); // "|"
+                                        // const tool_notes = tool_note.querySelector('input');
+                                        // tool_notes.style.width = `${note.length+1}em`;
+                                        // tool_notes.setAttribute('disabled', '');
+                                        // tool_notes.setAttribute('placeholder', note);
+                                        tool_note.querySelector('label').textContent = note;
+                                        tool_note.querySelector('input').remove();
+                                    }else{
+                                        tool_note.previousElementSibling.remove(); // "|"
+                                        tool_note.remove();
+                                    }
                                     frag_mark.appendChild(frag_tool);
                                     // write in
                                     const specific_chars = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -526,10 +548,9 @@
             },
             isMarkerSelectable: (node = null)=> {
                 const {init: {_conf: {class: {blackList:c_blackList}}}, _utils: {_dom: {valider, finder}}} = marker;
-                let notOnList = true;
                 if(!valider(node) || !node.classList) {
                     console.warn('invalid nodes or classList', node);
-                    return notOnList;
+                    return false;
                 }
                 let blackTags = ['h1','h2','h3','h4','h5','h6','a','s','del','code','mark','details','summary'],
                     blackList = c_blackList instanceof Array ? c_blackList : [];
@@ -540,7 +561,8 @@
                         return;
                     }
                 }
-                let blackLens = blackList.length;
+                let notOnList = true,
+                    blackLens = blackList.length;
                 if(blackLens > 0) {
                     for(let i=0;i<blackLens;i++){
                         let blackClass = blackList[i];
@@ -634,7 +656,7 @@
                     marks.dataset.rid = strGenerator();
                     range.surroundContents(marks);
                     // check marker is selectable
-                    const tool_mark = tools.querySelector('.'+c_mark),
+                    const tool_mark = tools.querySelector(`.${c_mark}`),
                           tool_disabled = tool_mark.classList.contains(c_disabled);
                     if(isMarkerReachedMax()){
                         // rewrite stored tools context only if tool_mark on enabled statu.(decreasing origin_mark dom edit)
@@ -658,11 +680,11 @@
                         close(marks);  // close(marks_parents);
                         return;
                     }
-                    const marks_children = marks.querySelectorAll('.' + c_line); // marks.children;
+                    const marks_children = marks.querySelectorAll(`.${c_line}`); // marks.children;
                     if(marks_children.length <= 0) return;
                     // console.log(marks_children);
                     marks_children.forEach((each_line)=>{
-                        let dynamic_line = e_effectsArea.querySelector('[data-rid="'+each_line.dataset.rid+'"]'),
+                        let dynamic_line = e_effectsArea.querySelector(`[data-rid="${each_line.dataset.rid}"]`),
                             line_child = finder(each_line, c_line, 1);
                         // close inside wrapped child
                         if(line_child && line_child.length >= 1){
@@ -694,7 +716,7 @@
                 }
             },
             down: function(node) {
-                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax}, class: {line:c_line, done:c_done, disabled:c_disabled}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
+                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
                 if(d_pending) {
                     console.warn('Abort on too-fast marking off! (wait a second then try to re-mark again.)');
                     return;
@@ -718,7 +740,8 @@
                 }
                 // check on same-chars
                 let paragraph_context = mark_paragraph.textContent,
-                    mark_text = mark_node.firstChild.nodeValue;
+                    mark_text = mark_node.firstChild.nodeValue,
+                    mark_note = mark_node.querySelector(`.${c_note} input`).value;
                 if(isMultiSameChar(paragraph_context, mark_text)){
                     alert('Abort on multi Same-chars on current paragraph!' + isMultiSameChar(paragraph_context, mark_text, true));
                     return;
@@ -741,6 +764,7 @@
                         rid: mark_rid,
                         uid: mark_indexes,
                         text: mark_text,
+                        note: mark_note,
                         node: node,
                     }, (res)=> {
                         // local updates (dom changes)
@@ -752,6 +776,23 @@
                 }).catch(err=>{
                     console.warn(err);
                 });
+            },
+            note: function(node) {
+                const {init: {_conf: {static: {ctxCopied:s_ctxCopied, ctxNote:s_ctxNote, ctxNoted:s_ctxNoted}, class: {line:c_line, note:c_note}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkDone}, mods: {close}} = marker;
+                if(!valider(node)) {
+                    return node;
+                }
+                const mark_node = finder(node, c_line),
+                      input_box = mark_node.querySelector(`.${c_note} input`),
+                      note_ctx = mark_node.querySelector(`.${c_note} label`);
+                input_box.focus();
+                if(input_box.oninput) {
+                    console.log('oninput registed.');
+                    return;
+                }
+                input_box.oninput = input_box.onpropertychange = function() {
+                    note_ctx.textContent = this.value.length>=1 ? s_ctxNoted : s_ctxNote;
+                };
             },
             quote: function(node) {
                 const {init: {_conf: {static: {ctxQuoted:s_ctxQuoted}, class: {line:c_line}, element: {commentArea:e_commentArea}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkDone}, mods: {close}} = marker;
@@ -843,7 +884,7 @@
                     console.warn('remote updates failed, invalid updateObject.', updObj);
                     return;
                 }
-                const {node, text, rid, uid, cls, ts} = updObj,
+                const {node, text, note, rid, uid, cls, ts} = updObj,
                       mark_cname = s_dataPrefix + rid;
                 // start pending(exec immediately without callback)..
                 _adjustPending(1);
@@ -887,6 +928,7 @@
                     'rid': rid,
                     'uid': uid,
                     "text": text,
+                    "note": note,
                     'ts': realtime_ts,
                 }, (res)=> {
                     const {code, msg = 'no message found.'} = res;
@@ -917,16 +959,20 @@
             fetch: (url='', _obj={}, cbk=false, cbks=false)=> {
                 const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user: {nick:d_nick, mail:d_mail}, stat: {promised: d_promised}}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramParser}}} = marker;
                 argsRewriter.call(marker, _obj, {
-                    'pid': s_postId,
                     'fetch': 0,
                     'count': 0,
                     'del': 0,
                     'ts': 0,
                     "nick": d_nick,
                     "mail": d_mail,
+                    'pid': s_postId,
                 }, (obj_)=> {
                     const params = '&'+paramParser(obj_);
-                    url = url ? url+params : s_apiUrl+params;
+                    url = url ? url : s_apiUrl;
+                    if(url.indexOf('?') == -1) {
+                        url = url + '?';
+                    }
+                    url = url + params;
                     const requestKey = JSON.stringify([url]);
                     // 检查 promise 缓存
                     if (d_promised[requestKey]) {
@@ -970,7 +1016,7 @@
                     // init&load dom..
                     marker.dom.initiate(marker);
                     // check marker status before initiate.(prevent mouseup events exec mark())
-                    const {init: {_conf: {class: {close:c_close, mark:c_mark}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, close}} = marker; // _event
+                    const {init: {_conf: {class: {close:c_close, mark:c_mark, note:c_note}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, close}} = marker; // _event
                     if(!isMarkerAvailable()) {
                         throw new Error('marker unavailable, register init failed..');
                     }
@@ -979,6 +1025,7 @@
                     addEvent(e_effectsArea, 'mouseup', debouncer(mark.bind(window.getSelection()), 100)); // addEvent this enviroument changed!!
                     clicker(e_effectsArea, c_close, debouncer((t)=>close(t, true), 150));
                     clicker(e_effectsArea, c_mark, debouncer((t)=>down(t), 200));
+                    clicker(e_effectsArea, c_note, debouncer((t)=>note(t), 200));
                     // clicker(e_effectsArea, '', (t)=>console.log('h2 clicked.',t), 'h2');
                     console.log('marker initialized.', marker);
                 } catch (error) {
@@ -1060,6 +1107,8 @@
                             ctxMarking: '标记中..',
                             ctxMarked: '已标记',
                             ctxMarkMax: '用户标记已满',
+                            ctxNote: '注释',
+                            ctxNoted: '已注释',
                             ctxCopy: '复制',
                             ctxCopied: '已复制',
                             ctxQuote: '引用',
@@ -1081,6 +1130,7 @@
                             toolIn: 'toolInside',
                             mark: 'mark',
                             copy: 'copy',
+                            note: 'note',
                             quote: 'quote',
                             update: 'update',
                             close: 'close',
