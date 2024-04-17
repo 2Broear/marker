@@ -757,13 +757,6 @@
                           mark_note = finder(mark_node, c_note, 1),
                           mark_input = finder(mark_note, "", 1, "input"),
                           mark_inputs = mark_input.value;
-                    mark_note.nextElementSibling.remove(); // "|"
-                    if(valider(mark_input)&&mark_inputs.length >= 1) {
-                        finder(mark_note, "", 1, "label").textContent = mark_inputs;
-                        mark_input.remove();
-                    }else{
-                        mark_note.remove();
-                    }
                     update({
                         rid: mark_rid,
                         uid: mark_indexes,
@@ -774,13 +767,20 @@
                         // local updates (dom changes)
                         mark_node.classList.add(c_done);
                         mark_node.dataset.uid = mark_indexes;
-                        const tool_inside = finder(mark_node, c_toolIn, 1),
-                              user_avatar = new Image();
-                        user_avatar.alt = d_nick;
-                        user_avatar.src = `${s_avatar}avatar/${d_mid}?d=mp&s=100&v=1.3.10`;
-                        tool_inside.insertBefore(user_avatar, node);
                         node.classList.add(c_disabled);
                         node.innerHTML = `${d_nick} ${s_ctxMarked}`;
+                        // mark "done"
+                        let user_avatar = new Image();
+                        user_avatar.alt = d_nick;
+                        user_avatar.src = `${s_avatar}avatar/${d_mid}?d=mp&s=100&v=1.3.10`;
+                        finder(mark_node, c_toolIn, 1).insertBefore(user_avatar, node);
+                        mark_note.nextElementSibling.remove(); // "|"
+                        if(valider(mark_input)&&mark_inputs.length >= 1) {
+                            finder(mark_note, "", 1, "label").textContent = mark_inputs;
+                            mark_input.remove();
+                        }else{
+                            mark_note.remove();
+                        }
                     });
                 }).catch(err=>console.warn(err));
             },
