@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, aniUnderline:c_aniUnderline, aniProcess:c_aniProcess, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
                     _element = _conf.element,
@@ -16,24 +16,25 @@
                 tools.className = c_tool; // tools.setAttribute('onselectstart','return false;');
                 tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
                 if(s_lineAnimate) {
-                    style.textContent = `@keyframes ${c_aniUnderline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_aniProcess}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
+                    style.textContent = `@keyframes ${c_underline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_processing}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 }
                 style.textContent += `
                     a.${c_line}.${c_done}{animation:none;-webkit-animation:none;transition:none;}
                     a.${c_line}:hover,a.${c_line}.${c_done}{background-size:100% ${s_lineBoldMax}%;}
                     a.${c_line}:hover{color:inherit!important;z-index:1!important;}
-                    a.${c_line}{color:inherit;text-decoration:none!important;background:-webkit-linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background:linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background-size:100% ${s_lineBold}%;transition:background-size .15s ease;animation:${c_aniUnderline} 1s 1 ease;-webkit-animation:${c_aniUnderline} 1s 1 ease;cursor:text;user-select:text;-webkit-user-drag:none;position:relative;}
-                    a.${c_line}.${c_aniProcess} .${c_tool},
+                    a.${c_line}{color:inherit;text-decoration:none!important;background:-webkit-linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background:linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background-size:100% ${s_lineBold}%;transition:background-size .15s ease;animation:${c_underline} 1s 1 ease;-webkit-animation:${c_underline} 1s 1 ease;cursor:text;user-select:text;-webkit-user-drag:none;position:relative;}
+                    a.${c_line}.${c_processing} .${c_tool},
                     a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
                     body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
                     a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
+                    a.${c_line}.${c_processing} .${c_tool} .${c_note},
                     a.${c_line}.${c_done}:hover .${c_tool} .${c_note}{margin:0 0 10px 10px;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 7px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .35s ease;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: currentColor transparent transparent transparent;border-width: 7px 10px 0px 0px;position: inherit;left: 12px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 10px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .25s linear;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: currentColor transparent transparent transparent;border-width: 7px 10px 0px 0px;position: inherit;left: 16px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note},
                     a.${c_line} .${c_tool} .${c_note} input,
-                    a.${c_line} .${c_tool} .${c_note}:hover input{border-radius:5px;/*border: 1px solid currentColor;background:inherit;*/color:white;background:currentColor;box-shadow:inherit;}
+                    a.${c_line} .${c_tool} .${c_note}:hover input{border-radius:50px;color:white;background:currentColor;box-shadow:inherit;/*border: 1px solid currentColor;background:inherit;*/}
                     a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 3px 5px 2px;color: inherit;border: 1px solid currentColor;background: transparent;}
                     a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .15s ease;border:none;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
@@ -51,8 +52,8 @@
                     a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:12%;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
                     a.${c_line} .${c_tool} span.${c_close}::after{transform:translate(-50%,-50%) rotate(-45deg);}
                     a.${c_line} .${c_tool} span.${c_close}:hover::before,a.${c_line} .${c_tool} span.${c_close}:hover::after{height:18%;}
-                    a.${c_line}.${c_aniProcess} .${c_tool} span.${c_close}{animation:${c_aniProcess} linear 1s infinite;-webkit-animation:${c_aniProcess} linear 1s infinite;pointer-events:none;}
-                    /*a.${c_line}.${c_aniProcess} .${c_tool} span.${c_close},*/
+                    a.${c_line}.${c_processing} .${c_tool} span.${c_close}{animation:${c_processing} linear 1s infinite;-webkit-animation:${c_processing} linear 1s infinite;pointer-events:none;}
+                    /*a.${c_line}.${c_processing} .${c_tool} span.${c_close},*/
                     a.${c_line} .${c_tool} span.${c_close}:hover{transform:scale(1.25);-webkit-transform:scale(1.25)}
                     a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border-radius:50%;position:absolute;top:-5px;right:-5px;}
                 `;
@@ -102,8 +103,8 @@
                                 }
                                 return;
                             }
+                            // 输出 所有用户标记
                             let _static = _conf.static;
-                            // 输出所有服务端标记（未校验）
                             Object.keys(res).forEach(user=> {
                                 let userMarks = Object.values(res[user]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                                 // console.log(userMarks)
@@ -166,12 +167,13 @@
                                     mark_paragraph.innerHTML = mark_paragraph.innerHTML.replace(specific_chars, frag_mark.outerHTML);
                                 });
                             });
-                            const curUserMarks = res[d_mid];
+                            // 校验 当前用户标记
+                            const curUserMarks = Object.values(res[d_mid]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                             if(!curUserMarks) {
                                 return;
                             }
-                            // 返回本地记录中不存在于远程记录的元素（始终检验）
                             if(localMarks.length > 0) {
+                                // 返回本地记录中不存在于远程记录的元素（始终检验）
                                 let existNonDeletedMarks = localMarks.filter(local => {
                                     // localNotInRemote: delete local marks which is non-existent from remote
                                     const localNotInRemote = !curUserMarks.some(remote => {
@@ -190,35 +192,33 @@
                                 }
                             }
                             // 对比返回的远程用户标记与本地记录（仅存在记录检查）
-                            if(curUserMarks) {
-                                // 返回数据（已响应）——>对比本地记录（未匹配到本地记录）——>新增本地记录
-                                if(curUserMarks.length > 0) {
-                                    let existNonUpdatedMarks = curUserMarks.filter(remote => {
-                                        // remoteNotInLocal: delete remote marks which is non-existent from local
-                                        const remote_mark = s_dataPrefix + remote.rid,
-                                              remoteNotInLocal = !localMarks.some(local_mark => {
-                                                  return remote_mark === local_mark;
-                                              });
-                                        return remoteNotInLocal;
+                            // 返回数据（已响应）——>对比本地记录（未匹配到本地记录）——>新增本地记录
+                            if(curUserMarks.length > 0) {
+                                let existNonUpdatedMarks = curUserMarks.filter(remote => {
+                                    // remoteNotInLocal: delete remote marks which is non-existent from local
+                                    const remote_mark = s_dataPrefix + remote.rid,
+                                          remoteNotInLocal = !localMarks.some(local_mark => {
+                                              return remote_mark === local_mark;
+                                          });
+                                    return remoteNotInLocal;
+                                });
+                                if(existNonUpdatedMarks.length > 0) {
+                                    existNonUpdatedMarks.forEach(marks=> {
+                                        const mark_rid = marks.rid,
+                                              mark_cname = s_dataPrefix + mark_rid,
+                                              ts_caches = JSON.parse(d_caches),
+                                              cached_ts = ts_caches[mark_cname];
+                                        // update localMarks only if localStorage exists(incase of any other user device get involved)
+                                        if(cached_ts) {
+                                            console.log(`a remote marker(${mark_cname}: ${cached_ts}) was found on non-existent localMarks(perhaps server delays), add cookie to local..`, '(existNonUpdatedMarks: slow-down the frequency!)');
+                                            // update(add) local-data instantly
+                                            setCookie(mark_cname, cached_ts, d_path, s_dataAlive); // dom changes(no longer needed)
+                                        }else{
+                                            console.log(`marker(${mark_rid}) belongs to another device(localStorage not found)`);
+                                        }
                                     });
-                                    if(existNonUpdatedMarks.length > 0) {
-                                        existNonUpdatedMarks.forEach(marks=> {
-                                            const mark_rid = marks.rid,
-                                                  mark_cname = s_dataPrefix + mark_rid,
-                                                  ts_caches = JSON.parse(d_caches),
-                                                  cached_ts = ts_caches[mark_cname];
-                                            // update localMarks only if localStorage exists(incase of any other user device get involved)
-                                            if(cached_ts) {
-                                                console.log(`a remote marker(${mark_cname}: ${cached_ts}) was found on non-existent localMarks(perhaps server delays), add cookie to local..`, '(existNonUpdatedMarks: slow-down the frequency!)');
-                                                // update(add) local-data instantly
-                                                setCookie(mark_cname, cached_ts, d_path, s_dataAlive); // dom changes(no longer needed)
-                                            }else{
-                                                console.log(`marker(${mark_rid}) belongs to another device(localStorage not found)`);
-                                            }
-                                        });
-                                    }else{
-                                        console.debug('localMarks: ALL MATCHED');
-                                    }
+                                }else{
+                                    console.debug('localMarks: ALL MATCHED');
                                 }
                             }
                         };
@@ -774,7 +774,7 @@
                         mark_node.classList.add(c_done);
                         mark_node.dataset.uid = mark_indexes;
                         node.classList.add(c_disabled);
-                        node.textContent = `${d_nick} ${s_ctxMarked}`;
+                        let markedContext = `${d_nick} ${s_ctxMarked}`;
                         // mark "done"
                         let user_avatar = new Image();
                         user_avatar.alt = d_nick;
@@ -784,9 +784,11 @@
                         if(valider(mark_input)&&mark_inputs.length >= 1) {
                             finder(mark_note, "", 1, "label").textContent = mark_inputs;
                             mark_input.remove();
+                            markedContext = d_nick;
                         }else{
                             mark_note.remove();
                         }
+                        node.textContent = markedContext;
                     });
                 }).catch(err=>console.warn(err));
             },
@@ -850,7 +852,7 @@
                 node.textContent = s_ctxCopied;
             },
             close: function(node, execUpdate=false) {
-                const {init: {_conf: {class: {line:c_line, tool:c_tool, aniProcess:c_aniProcess}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkAble, isMarkerAccessable, isNodeTextOnly, isNodeMarkDone}, mods: {update}} = marker;
+                const {init: {_conf: {class: {line:c_line, tool:c_tool, processing:c_processing}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkAble, isMarkerAccessable, isNodeTextOnly, isNodeMarkDone}, mods: {update}} = marker;
                 if(!valider(node)) return node;
                 // 执行 close() 操作后将打乱标记点父级（bug：无法再次找到已定义的子级元素，已通过动态选择each_line解决）
                 const mark_node = isNodeMarkAble(node) ? node : finder(node, c_line);
@@ -872,15 +874,15 @@
                 if(execUpdate && isNodeMarkDone(mark_node)) {
                     const {rid, uid} = mark_node.dataset;
                     if(confirm('deleting rid#' + rid + '?')) {
-                        mark_node.classList.add(c_aniProcess);
+                        mark_node.classList.add(c_processing);
                         update({
                             rid: rid,
                             uid: uid,
                             node: mark_node,
-                            cls: c_aniProcess,
+                            cls: c_processing,
                         }, (res)=> update_dom(), true);
                     }else{
-                        mark_node.classList.remove(c_aniProcess);
+                        mark_node.classList.remove(c_processing);
                     }
                     return;
                 }
@@ -1141,8 +1143,8 @@
                             close: 'close',
                             done: 'done',
                             disabled: 'disabled',
-                            aniUnderline: 'underline',
-                            aniProcess: 'processing',
+                            underline: 'underline',
+                            processing: 'processing',
                             blackList: ['markable','wp-block-quote','wp-block-code','wp-block-table','wp-element-caption'],
                         },
                         element: {

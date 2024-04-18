@@ -3,11 +3,16 @@ a local-storage(php based) javascript api marking-off plugin.
 
 #### 功能简介
 
-- 多人划线标记（注释）
-- 划线文本引用、复制
-- 用户本地 + 远程校验
-- 本地储存验证记录
-- 自定义初始化参数
+- 多人划线标记
+- 划线文本引用、复制、注释
+- 用户本地浏览器 + 远程服务端双校验
+- 本地储存（localStorage+Cookie）验证记录
+- 大量自定义初始化参数（文本、元素、class..）
+- 可配置生效选区、选区内禁止选中黑名单
+- 可配置最大标记数量、最小选中字符长度
+- 可配置标记颜色（可选渐变、角度）、粗细
+- 可配置开启或关闭标记动画
+- 可配置标记保存时效
 
 ![marker](https://raw.githubusercontent.com/2Broear/marker/main/marker.gif "marker.gif")
 
