@@ -14,28 +14,30 @@
                 marks.href = 'javascript:;';
                 marks.rel = 'nofollow';
                 tools.className = c_tool; // tools.setAttribute('onselectstart','return false;');
-                tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释内容.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
+                tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
                 if(s_lineAnimate) {
                     style.textContent = `@keyframes ${c_aniUnderline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_aniProcess}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 }
                 style.textContent += `
                     a.${c_line}.${c_done}{animation:none;-webkit-animation:none;transition:none;}
                     a.${c_line}:hover,a.${c_line}.${c_done}{background-size:100% ${s_lineBoldMax}%;}
-                    a.${c_line}:hover{color:inherit!important;}
+                    a.${c_line}:hover{color:inherit!important;z-index:1!important;}
                     a.${c_line}{color:inherit;text-decoration:none!important;background:-webkit-linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background:linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background-size:100% ${s_lineBold}%;transition:background-size .15s ease;animation:${c_aniUnderline} 1s 1 ease;-webkit-animation:${c_aniUnderline} 1s 1 ease;cursor:text;user-select:text;-webkit-user-drag:none;position:relative;}
                     a.${c_line}.${c_aniProcess} .${c_tool},
                     a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
-                    body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: var(--preset-4a);background: -webkit-linear-gradient(90deg, var(--preset-3a) 0, var(--preset-4a));background: linear-gradient(0deg, var(--preset-3a) 0, var(--preset-4a));}
-                    a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;margin:auto auto 10px;padding: 5px;color:gray;line-height:18px;font-weight:normal;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: lightgray transparent transparent transparent;border-width: 6px 10px 0px 0px;position: inherit;left: 12px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
+                    body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
+                    a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;/*user-select:none;-webkit-user-select:none;*/}
+                    a.${c_line}.${c_done}:hover .${c_tool} .${c_note}{margin:0 0 10px 10px;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 7px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .35s ease;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: currentColor transparent transparent transparent;border-width: 7px 10px 0px 0px;position: inherit;left: 12px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note},
                     a.${c_line} .${c_tool} .${c_note} input,
-                    a.${c_line} .${c_tool} .${c_note}:hover input{border: 1px solid lightgray;border-radius:5px;background:inherit;}
-                    a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 3px 5px 2px;}
-                    a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .35s ease;border:none;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:lightgray!important;display:none;}
+                    a.${c_line} .${c_tool} .${c_note}:hover input{border-radius:5px;/*border: 1px solid currentColor;background:inherit;*/color:white;background:currentColor;box-shadow:inherit;}
+                    a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 3px 5px 2px;color: inherit;border: 1px solid currentColor;background: transparent;}
+                    a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .15s ease;border:none;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
                     a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;margin: 5px 5px 5px 0!important;}
                     a.${c_line} .${c_tool} i{font-style:normal;}
                     a.${c_line} .${c_tool} i,
@@ -145,17 +147,19 @@
                                     frag_mark.textContent = text;
                                     frag_mark.dataset.uid = uid;
                                     frag_mark.dataset.rid = rid;
-                                    frag_mark.title = `marked at ${date}`;
+                                    frag_mark.title = `${nick} marked at ${date}`;
                                     tool_mark.className = `${c_mark} ${c_disabled}`;
-                                    tool_mark.textContent = `${nick} ${s_ctxMarked}`;
+                                    let markedContext = `${nick} ${s_ctxMarked}`;
                                     if(note&&note.length >= 1) {
                                         tool_mark.nextElementSibling.remove(); // "|"
                                         finder(tool_note, "", 1, "label").textContent = note;
                                         finder(tool_note, "", 1, "input").remove();
+                                        markedContext = nick;
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
                                     }
+                                    tool_mark.textContent = markedContext;
                                     frag_mark.appendChild(frag_tool);
                                     // write in
                                     const specific_chars = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -163,6 +167,9 @@
                                 });
                             });
                             const curUserMarks = res[d_mid];
+                            if(!curUserMarks) {
+                                return;
+                            }
                             // 返回本地记录中不存在于远程记录的元素（始终检验）
                             if(localMarks.length > 0) {
                                 let existNonDeletedMarks = localMarks.filter(local => {
@@ -179,7 +186,7 @@
                                         delCookie(mark, d_path); // no need for dom changes
                                     });
                                 }else{
-                                    console.log('remoteMarks: ALL MATCHED');
+                                    console.debug('remoteMarks: ALL MATCHED');
                                 }
                             }
                             // 对比返回的远程用户标记与本地记录（仅存在记录检查）
@@ -210,7 +217,7 @@
                                             }
                                         });
                                     }else{
-                                        console.log('localMarks: ALL MATCHED');
+                                        console.debug('localMarks: ALL MATCHED');
                                     }
                                 }
                             }
@@ -630,7 +637,8 @@
                     const range = that.getRangeAt(0),
                           anchor_parent = that.anchorNode.parentElement,
                           focus_parent = that.focusNode.parentElement;
-                    let contains_node = null;
+                    /*** close switch for wrap-selects ***/
+                    let contains_node = null; //anchor_parent || focus_parent
                     switch(true) {
                         case anchor_parent != range.commonAncestorContainer:
                             contains_node = anchor_parent;
@@ -639,10 +647,8 @@
                             contains_node = focus_parent;
                             break;
                     }
-                    if(!isMarkerSelectable(contains_node)) {
-                        // console.warn('unSelectable node.', contains_node);
-                        return;
-                    }
+                    if(!isMarkerSelectable(contains_node)) return;
+                    /*** close switch for wrap-selects ***/
                     if(isNodeMarkAble(contains_node) && isNodeMarkDone(contains_node)) {
                         console.warn('selection contains marked-parent content, canceling..', contains_node);
                         return;
@@ -768,7 +774,7 @@
                         mark_node.classList.add(c_done);
                         mark_node.dataset.uid = mark_indexes;
                         node.classList.add(c_disabled);
-                        node.innerHTML = `${d_nick} ${s_ctxMarked}`;
+                        node.textContent = `${d_nick} ${s_ctxMarked}`;
                         // mark "done"
                         let user_avatar = new Image();
                         user_avatar.alt = d_nick;
@@ -785,20 +791,22 @@
                 }).catch(err=>console.warn(err));
             },
             note: function(node) {
-                const {init: {_conf: {static: {ctxCopied:s_ctxCopied, ctxNote:s_ctxNote, ctxNoted:s_ctxNoted}, class: {line:c_line, note:c_note}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkDone}, mods: {close}} = marker;
+                const {init: {_conf: {static: {ctxNote:s_ctxNote, ctxNoted:s_ctxNoted}, class: {line:c_line}}}, _utils: {_dom: {valider, finder}}, status: {isNodeMarkDone}} = marker;
                 if(!valider(node)) {
                     return node;
                 }
                 const mark_node = finder(node, c_line),
-                      input_box = finder(mark_node, "", 1, "input"),
-                      note_ctx = finder(mark_node, "", 1, "label");
+                      input_box = finder(mark_node, "", 1, "input");
+                if(!valider(input_box)  || isNodeMarkDone(mark_node)){
+                    return;
+                }
                 input_box.focus();
                 if(input_box.oninput) {
-                    console.log('oninput registed.');
+                    console.log('on-input has registered!');
                     return;
                 }
                 input_box.oninput = input_box.onpropertychange = function() {
-                    note_ctx.textContent = this.value.length>=1 ? s_ctxNoted : s_ctxNote;
+                    finder(mark_node, "", 1, "label").textContent = this.value.length>=1 ? s_ctxNoted : s_ctxNote;
                 };
             },
             quote: function(node) {
@@ -852,10 +860,8 @@
                     return;
                 }
                 let update_dom = ()=> {
-                    let mark_tools = finder(mark_node, c_tool, 1);
-                    if(mark_tools.length >= 1) {
-                        mark_tools[mark_tools.length-1].remove();  // mark_tools[0].remove();
-                    }
+                    let mark_tools = mark_node.querySelectorAll(`.${c_tool}`); //finder(mark_node, c_tool, 1);
+                    if(mark_tools.length >= 1) mark_tools[mark_tools.length-1].remove();
                     let replace_content = isNodeTextOnly(mark_node) ? mark_node.firstChild.textContent : mark_node.innerHTML;
                     if(!mark_node.parentElement) {
                         console.log('mark parent NOT found while closing', mark_node);
@@ -863,25 +869,22 @@
                     }
                     mark_node.parentElement.innerHTML = mark_node.parentElement.innerHTML.replace(mark_node.outerHTML, replace_content);
                 };
-                if(execUpdate && isNodeMarkDone(mark_node)){
+                if(execUpdate && isNodeMarkDone(mark_node)) {
                     const {rid, uid} = mark_node.dataset;
                     if(confirm('deleting rid#' + rid + '?')) {
                         mark_node.classList.add(c_aniProcess);
-                        // let that = this&&this.update ? this : mods; // delete from remote.
                         update({
                             rid: rid,
                             uid: uid,
                             node: mark_node,
                             cls: c_aniProcess,
-                        }, (res)=> {
-                            update_dom(); // local updates (dom changes)
-                        }, true);
+                        }, (res)=> update_dom(), true);
                     }else{
                         mark_node.classList.remove(c_aniProcess);
                     }
-                }else{
-                    update_dom();
+                    return;
                 }
+                update_dom();
             },
             update: function(updObj={}, cbk=false, del=false) {
                 const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, del: delCookie}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
@@ -1140,7 +1143,7 @@
                             disabled: 'disabled',
                             aniUnderline: 'underline',
                             aniProcess: 'processing',
-                            blackList: ['wp-block-quote','wp-block-code','wp-block-table','wp-element-caption'],
+                            blackList: ['markable','wp-block-quote','wp-block-code','wp-block-table','wp-element-caption'],
                         },
                         element: {
                             effectsArea: document,
