@@ -3,7 +3,7 @@ a local-storage(php based) javascript api marking-off plugin.
 
 #### 功能简介
 
-- 多人划线标记
+- 多人划线标记（多评论系统共用）
 - 划线文本引用、复制、注释
 - 用户本地浏览器 + 远程服务端双校验
 - 本地储存（localStorage+Cookie）验证记录
@@ -49,6 +49,7 @@ new marker.init();
 | lineBold | Number | 标记线粗（基本） | 默认 `15` |
 | lineBoldMax | Number | 标记线粗（悬浮） | 默认 `30` |
 | lineAnimate | Boolean | 标记划线动画 | 默认 `true` |
+| lineKeepUp | Boolean | 标记（默认）始终显示 | 默认 `false` |
 |  |  |  |  |
 | ctxMark | String | 标记文本 | 默认 `标记` |
 | ctxMarking | String | 标记中文本 | 默认 `标记中` |

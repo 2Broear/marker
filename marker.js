@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineKeepUp:s_lineKeepUp, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
                     _element = _conf.element,
@@ -17,6 +17,9 @@
                 tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
                 if(s_lineAnimate) {
                     style.textContent = `@keyframes ${c_underline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_processing}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
+                }
+                if(s_lineKeepUp) {
+                    style.textContent += `a.${c_line} .${c_tool}{padding:10px 0 50px!important;opacity:1!important;}a.${c_line}.${c_done} .${c_tool} .${c_note}{margin:0 0 10px 10px!important;}`;
                 }
                 style.textContent += `
                     a.${c_line}.${c_done}{animation:none;-webkit-animation:none;transition:none;}
@@ -35,7 +38,7 @@
                     a.${c_line}.${c_done} .${c_tool} .${c_note},
                     a.${c_line} .${c_tool} .${c_note} input,
                     a.${c_line} .${c_tool} .${c_note}:hover input{border-radius:50px;color:white;background:currentColor;box-shadow:inherit;/*border: 1px solid currentColor;background:inherit;*/}
-                    a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 3px 5px 2px;color: inherit;border: 1px solid currentColor;background: transparent;}
+                    a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 2px 8px;color: inherit;border: 1px solid currentColor;background: transparent;}
                     a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .15s ease;border:none;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
@@ -72,7 +75,7 @@
                                     mail: e_userMail.value,
                                 },
                                 _execUpdate = (userinfo, cbk)=> {
-                                    userinfo.mid = md5(userinfo.mail);
+                                    userinfo.mid = userinfo.mail ? md5(userinfo.mail) : "";
                 			        // store userinfo(d_mid for currentUserCounts verification
             			            marker.data = userinfo;
                                     // store to local cookies
@@ -168,10 +171,11 @@
                                 });
                             });
                             // 校验 当前用户标记
-                            const curUserMarks = Object.values(res[d_mid]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
+                            let curUserMarks = res[d_mid];
                             if(!curUserMarks) {
                                 return;
                             }
+                            curUserMarks = Object.values(curUserMarks); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                             if(localMarks.length > 0) {
                                 // 返回本地记录中不存在于远程记录的元素（始终检验）
                                 let existNonDeletedMarks = localMarks.filter(local => {
@@ -514,7 +518,7 @@
             isMarkerUserUpdate: function() {
                 const {init: {_conf: {element: {commentInfo: {userMail:e_userMail}}}}, data: {user: {mail:d_mail}}, status:{isMarkerAccessable}} = marker;
                 const user_updated = decodeURIComponent(d_mail) !== e_userMail.value;
-                return isMarkerAccessable() && user_updated; // let that = this&&this.status ? this : status;
+                return isMarkerAccessable() && user_updated;
             },
             isMarkerReachedMax: (server_verify = false)=> {
                 const {init: {_conf: {static: {dataMax:s_dataMax, apiUrl:s_apiUrl}}}, data: {list:d_list, stat: {counts:d_counts_}, _counts:d_counts}, mods: {fetch}} = marker;
@@ -1067,7 +1071,7 @@
                 'list': result,
                 'path': window.location.pathname,
                 '_caches': window.localStorage.getItem(s_dataCaches) || '{}',
-                '_counts': s_dataCount, // freezed
+                '_counts': s_dataCount,
             };
         },
         set data(obj){
@@ -1079,7 +1083,7 @@
             Object.keys(obj).forEach(item=> {
                 let set_val = obj[item];
                 if(set_val || set_val===0) {
-                    setter[item] = set_val; // setter[item] ??= set_val;
+                    setter[item] = set_val; // ??= set_val;
                 }
             });
         },
@@ -1110,6 +1114,7 @@
                             lineBold: 15,
                             lineBoldMax: 30,
                             lineAnimate: true,
+                            lineKeepUp: false,
                             ctxMark: '标记',
                             ctxMarking: '标记中..',
                             ctxMarked: '已标记',
