@@ -29,11 +29,18 @@
                     a.${c_line}.${c_processing} .${c_tool},
                     a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
+                    body.dark a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
+                    body.dark a.${c_line} .${c_tool} .${c_note} label{color: white;}
                     body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
+                    @media (prefers-color-scheme: dark) {
+                        a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
+                        a.${c_line} .${c_tool} .${c_note} label{color: white;}
+                        a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
+                    }
                     a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
                     a.${c_line}.${c_processing} .${c_tool} .${c_note},
                     a.${c_line}.${c_done}:hover .${c_tool} .${c_note}{margin:0 0 10px 10px;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 10px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .25s linear;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 10px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .15s linear;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note}:after{content: "";width: 0;height: 0;border-style: solid;border-color: currentColor transparent transparent transparent;border-width: 7px 10px 0px 0px;position: inherit;left: 16px;bottom: -6px;z-index: 1;right:auto;margin:auto;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note},
                     a.${c_line} .${c_tool} .${c_note} input,
