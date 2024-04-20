@@ -10,11 +10,10 @@ a local-storage(php based) javascript api marking-off plugin.
 - 大量自定义初始化参数（文本、元素、class..）
 - 可配置生效选区、选区内禁止选中黑名单
 - 可配置最大标记数量、最小选中字符长度
-- 可配置标记颜色（可选渐变、角度）、粗细
-- 可配置开启或关闭标记动画
-- 可配置标记保存时效
+- 可配置标记颜色（可选渐变、角度）、标记粗细、标记保存时效
+- 可配置开启或关闭标记动画、标记功能组件
 
-![marker](https://raw.githubusercontent.com/2Broear/marker/main/marker.gif "marker.gif")
+![marker](https://raw.githubusercontent.com/2Broear/marker/main/marker2.gif "marker.gif")
 
 ## 使用说明
 可 _手动_ 加载 `marker.js` 脚本后初始化，也可异步 `xhr` 加载完成初始化：
@@ -37,7 +36,7 @@ new marker.init();
 |  |  |  |  |
 | dataMin | Number | 最小标记文本字符长度 | 默认 `2` |
 | dataMax | Number | 最大标记数量 | 默认 `3` |
-| dataDelay | Number | 模拟标记延迟 | 默认 `2` |
+| dataDelay | Number | 模拟标记延迟 | 默认 `500` |
 | dataAlive | Number | 本地验证数据储存时效 | 默认 `365` |
 | dataCount | Number | 用户远程标记数量（页面刷新时自动初始化） | 默认 `0` |
 | dataPrefix | String | 本地储存（cookie）前缀 | 默认 `marker-` |
@@ -147,6 +146,7 @@ const custom_args = {
         lineBold: 10, // 使用更细线标记
         lineBoldMax: 100, // 标记线全覆盖文本（悬浮）
         lineAnimate: false, // 关闭划线动画
+        useQuote: false, // 关闭引用功能
         apiUrl: "<?php echo get_bloginfo('template_directory'); ?>/plugin/mark.php", // 假设文件处于 plugin 目录）
         md5Url: "<?php echo get_bloginfo('template_directory'); ?>/js/md5.js", // 假设文件处于 js 目录）
         postId: <?php echo $post->ID; ?>, // 使用 wordpress 文章ID
@@ -169,7 +169,7 @@ new marker.init(custom_args);
 
 ### todo
 
-- ❎ 可选 Baas 无后端化
+- ❎ 可选 Baas 无后端化数据储存
 
 ## 其他
 任何问题及建议可提 issue.
