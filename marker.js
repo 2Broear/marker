@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,
                     style = document.createElement('STYLE'),
@@ -32,6 +32,7 @@
                 if(s_useNote) toolsLoader(toolsInside, c_note, `${s_ctxNote}内容`, `<label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" />`);
                 if(s_useCopy) toolsLoader(toolsInside, c_copy, `${s_ctxCopy}内容`, s_ctxCopy);
                 if(s_useQuote) toolsLoader(toolsInside, c_quote, `评论${s_ctxQuote}`, s_ctxQuote);
+                toolsLoader(toolsInside, c_like, `认同${s_ctxLike}👍`, s_ctxLike);
                 // always load closer(selectively remove)
                 const tool_close = document.createElement('SPAN');
                 tool_close.className = c_close;
@@ -74,7 +75,9 @@
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
                     a.${c_line} .${c_tool} i:first-of-type,
                     a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
-                    a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;margin: 5px 5px 5px 0!important;}
+                    a.${c_line} .${c_tool} .${c_avatars}{margin: 3px 5px 2px 10px;display: inline-block;line-height: normal;vertical-align: middle;}
+                    a.${c_line} .${c_tool} img:first-of-type{left:0;border:0;}
+                    a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;display:block;margin:0;border: 2px solid white;box-sizing: content-box;margin-left:-10px!important;/*position:relative;left:-10px;*/}
                     a.${c_line} .${c_tool} i{font-style:normal;}
                     a.${c_line} .${c_tool} i,
                     a.${c_line} .${c_tool} img,
@@ -151,21 +154,19 @@
                                     Object.freeze(_conf.static);
                                 }
                                 userMarks.forEach(mark=> {
-                                    const {nick, text, date, uid, rid, note} = mark;
+                                    const {nick, text, date, uid, rid, note, like} = mark;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
                                         frag_tool = tools.cloneNode(true), 
                                         tool_inside = finder(frag_tool, c_toolIn, 1),
                                         tool_mark = finder(frag_tool, c_mark, 1),
                                         tool_note = finder(frag_tool, c_note, 1),
-                                        tool_avatar = new Image(),
                                         mark_indexes = uid.match('(\\d+)-(\\d+)'),
                                         mark_index = mark_indexes[1],
                                         mark_paragraph = e_effectsArea.children[mark_index];
-                                    if(d_mid !== user) {
-                                        // remove close button if does not belongs
-                                        // finder(frag_tool, c_close, 1).remove();
-                                    }
+                                    // remove close button if marker does not belongs
+                                    if(d_mid !== user) finder(frag_tool, c_close, 1).remove();
+                                    // traversal context nodes
                                     if(!mark_paragraph.textContent.includes(text)){
                                         console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
                                         const effectChildNodes = e_effectsArea.children;
@@ -178,21 +179,45 @@
                                         mark_paragraph = effectChildNodes[mark_index];
                                         console.log(`traversal done. found(indexOf ${text}) on mark_uid:`, mark_index);
                                     }
+                                    // load users avatar
+                                    const tool_avatar = new Image(),
+                                          tool_avatars = document.createElement('DIV');
+                                    tool_avatars.className = c_avatars;
                                     tool_avatar.alt = nick;
                                     tool_avatar.src = `${s_avatar}avatar/${user}?d=mp&s=100&v=1.3.10`;
-                                    tool_inside.insertBefore(tool_avatar, tool_inside.firstChild);
+                                    tool_avatars.appendChild(tool_avatar);
+                                    let multUserMarkContext = ` ${s_ctxMarked}`;
+                                    if(like&&like.length>=1) {
+                                        const multUserLikeLimit = 2,
+                                              multUserMarkExtra = like.length>multUserLikeLimit ? like.length - multUserLikeLimit : "";
+                                        multUserMarkContext = ` 等${multUserMarkExtra}人${s_ctxMarked}`;
+                                        const avatar_fragment = document.createDocumentFragment();
+                                        for(let i=0;i<like.length;i++) {
+                                            if(i>=multUserLikeLimit) break;
+                                            let temp_avatar = new Image();
+                                            temp_avatar.alt = like[i];
+                                            temp_avatar.src = `${s_avatar}avatar/${like[i]}?d=mp&s=100&v=1.3.10`;
+                                            avatar_fragment.appendChild(temp_avatar);
+                                        }
+                                        tool_avatars.appendChild(avatar_fragment);
+                                    }
+                                    tool_inside.insertBefore(tool_avatars, tool_inside.firstChild);
                                     frag_mark.classList.add(c_done);
                                     frag_mark.textContent = text;
                                     frag_mark.dataset.uid = uid;
                                     frag_mark.dataset.rid = rid;
                                     frag_mark.title = `${nick} marked at ${date}`;
                                     tool_mark.className = `${c_mark} ${c_disabled}`;
-                                    let markedContext = `${nick} ${s_ctxMarked}`;
-                                    if(note&&note.length >= 1) {
-                                        tool_mark.nextElementSibling.remove(); // "|"
-                                        finder(tool_note, "", 1, "label").textContent = note;
-                                        // finder(tool_note, "", 1, "input").remove();
-                                        markedContext = nick;
+                                    let markedContext = nick + multUserMarkContext;
+                                    if(note) {
+                                        const tool_like = finder(frag_tool, c_like, 1);
+                                        tool_like.previousElementSibling.remove(); // "|"
+                                        tool_like.remove(); // always remove like button on noted marker
+                                        if(note.length >=1 ) {
+                                            tool_mark.nextElementSibling.remove(); // "|"
+                                            finder(tool_note, "", 1, "label").textContent = note;
+                                            markedContext = nick;
+                                        }
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
@@ -381,6 +406,8 @@
                     return valider(parentNode) ? Array.prototype.indexOf.call(parentNode.children, node) : 0;
                 },
                 finder: (element=null, className='', mod=0, tagName="")=> {
+                    const valider = marker._utils._dom.valider;
+                    if(!valider(element)) return null;
                     if (mod === '' || typeof mod !== 'number') {
                         console.warn('invalid mod, must be value 0 or 1', mod);
                         return null;
@@ -574,8 +601,8 @@
                                 }
                                 resolve(max_reached);
                             }else{
-                                reject(d_counts >= maxDataLength);
-                                console.warn('rejected of', res);
+                                reject(d_counts >= maxDataLength); //false
+                                console.log('rejected of server_verify', res);
                             }
                         });
                     }).then(res=> {
@@ -755,8 +782,8 @@
                     console.warn(error);
                 }
             },
-            down: function(node) {
-                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax, avatar:s_avatar}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled, toolIn:c_toolIn}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}, user: {nick:d_nick,mid:d_mid}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
+            down: function(node, verify_updates=true) {
+                const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax, ctxLike:s_ctxLike, avatar:s_avatar}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled, avatars:c_avatars}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}, user: {nick:d_nick,mid:d_mid}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
                 if(d_pending) {
                     console.warn('Abort on too-fast marking off! (wait a second then try to re-mark again.)');
                     return;
@@ -767,7 +794,8 @@
                 }
                 node.textContent = s_ctxMarking;
                 const mark_node = finder(node, c_line);
-                if(isNodeMarkDone(mark_node)) {
+                // additional check for verify ingore(like action)
+                if(isNodeMarkDone(mark_node) && verify_updates) {
                     alert('Abort on marked-done node!');
                     node.textContent = s_ctxMarked;
                     mark_node.classList.add(c_disabled);
@@ -788,7 +816,7 @@
                 // compare local-counts(read only) for decreasing server_verify requests. (bug: read-only variables can not be updated instantly, always use server_verify)
                 const ifServerReachedMax = isMarkerReachedMax(true);
                 ifServerReachedMax.then(reach=> {
-                    if(reach) {
+                    if(reach && verify_updates) {
                         alert('Abort on reaching(server side) dataMax!');
                         node.textContent = s_ctxMarkMax;
                         node.classList.add(c_disabled);
@@ -805,6 +833,7 @@
                         rid: mark_rid,
                         uid: mark_indexes,
                         text: mark_text,
+                        like: d_mid,
                         note: mark_inputs,
                         node: node,
                     }, (res)=> {
@@ -812,21 +841,23 @@
                         mark_node.classList.add(c_done);
                         mark_node.dataset.uid = mark_indexes;
                         node.classList.add(c_disabled);
-                        let markedContext = `${d_nick} ${s_ctxMarked}`;
                         // mark "done"
-                        let user_avatar = new Image();
+                        const user_avatar = new Image();
                         user_avatar.alt = d_nick;
                         user_avatar.src = `${s_avatar}avatar/${d_mid}?d=mp&s=100&v=1.3.10`;
-                        finder(mark_node, c_toolIn, 1).insertBefore(user_avatar, node);
-                        mark_note.nextElementSibling.remove(); // "|"
-                        if(valider(mark_input)&&mark_inputs.length >= 1) {
-                            finder(mark_note, "", 1, "label").textContent = mark_inputs;
-                            mark_input.remove();
-                            markedContext = d_nick;
-                        }else{
-                            mark_note.remove();
+                        finder(mark_node, c_avatars, 1).appendChild(user_avatar);
+                        let markedContext = `${d_nick} ${s_ctxMarked}`;
+                        if(mark_note) {
+                            mark_note.nextElementSibling.remove(); // "|"
+                            if(valider(mark_input)&&mark_inputs.length >= 1) {
+                                finder(mark_note, "", 1, "label").textContent = mark_inputs;
+                                mark_input.remove();
+                                markedContext = d_nick;
+                            }else{
+                                mark_note.remove();
+                            }
                         }
-                        node.textContent = markedContext;
+                        node.textContent = verify_updates ? markedContext : s_ctxLike;
                     });
                 }).catch(err=>console.warn(err));
             },
@@ -934,7 +965,7 @@
                     console.warn('remote updates failed, invalid updateObject.', updObj);
                     return;
                 }
-                const {node, text, note, rid, uid, cls, ts} = updObj,
+                const {node, text, note, like, rid, uid, cls, ts} = updObj,
                       mark_cname = s_dataPrefix + rid;
                 // start pending(exec immediately without callback)..
                 _adjustPending(1);
@@ -977,6 +1008,7 @@
                     'uid': uid,
                     "text": text,
                     "note": note,
+                    "like": like,
                     'ts': realtime_ts,
                 }, (res)=> {
                     const {code, msg = 'no messages.'} = res;
@@ -987,20 +1019,22 @@
                         _adjustPending(0);  // pending abort..
                         return;
                     }
-                    // record of localStorage(ts caches for del)
-                    let ts_caches = window.localStorage.getItem(s_dataCaches);
-                    ts_caches = ts_caches ? JSON.parse(ts_caches) : {};
-                    ts_caches[mark_cname] = realtime_ts;
-                    window.localStorage.setItem(s_dataCaches, JSON.stringify(ts_caches));
-                    // update(add) cookies Immediately(dual-check insurance)
-                    setCookie(mark_cname, realtime_ts, d_path, s_dataAlive);
-                    console.log(`${mark_cname} updated(ts: ${realtime_ts}) `, msg);
+                    if(like) {
+                        console.log(msg);
+                    }else{
+                        // record of localStorage(ts caches for del)
+                        let ts_caches = window.localStorage.getItem(s_dataCaches);
+                        ts_caches = ts_caches ? JSON.parse(ts_caches) : {};
+                        ts_caches[mark_cname] = realtime_ts;
+                        window.localStorage.setItem(s_dataCaches, JSON.stringify(ts_caches));
+                        // update(add) cookies Immediately(dual-check insurance)
+                        setCookie(mark_cname, realtime_ts, d_path, s_dataAlive);
+                        console.log(`${mark_cname} updated(ts: ${realtime_ts}) `, msg);
+                    }
                     _adjustPending(0, ()=> {
                         funValidator(cbk) ? cbk(res) : console.log('update(add) succesed(no calls)', msg);
                     });
                 });
-                // Multi Same-fetch requests fire test..
-                // fetch(s_apiUrl, {'rid': rid,'uid': uid,"text": text,'ts': realtime_ts});
             },
             fetch: (url='', _obj={}, cbk=false, cbks=false)=> {
                 const {init: {_conf: {static: {postId:s_postId, apiUrl:s_apiUrl}}}, data: {user: {nick:d_nick, mail:d_mail}, stat: {promised: d_promised}}, _utils: {_etc: {argsRewriter, funValidator}, _diy: {paramParser}}} = marker;
@@ -1063,11 +1097,12 @@
                     // init&load dom..
                     marker.dom.initiate(marker);
                     // check marker status before initiate.(prevent mouseup events exec mark())
-                    const {init: {_conf: {static: {useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {close:c_close, mark:c_mark, note:c_note, copy:c_copy, quote:c_quote}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, copy, quote, close}} = marker; // _event
+                    const {init: {_conf: {static: {useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {close:c_close, mark:c_mark, note:c_note, copy:c_copy, quote:c_quote, like:c_like}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, copy, quote, close}} = marker; // _event
                     if(!isMarkerAvailable()) throw new Error('marker unavailable, register init failed..');
                     // bind events
                     addEvent(e_effectsArea, 'mouseup', debouncer(mark.bind(window.getSelection()), 100)); // addEvent this enviroument changed!!
                     clicker(e_effectsArea, c_mark, debouncer((t)=>down(t)));
+                    clicker(e_effectsArea, c_like, debouncer((t)=>down(t, false)));
                     clicker(e_effectsArea, c_close, debouncer((t)=>close(t, true), 150));
                     if(s_useNote) clicker(e_effectsArea, c_note, debouncer((t)=>note(t)));
                     if(s_useCopy) clicker(e_effectsArea, c_copy, debouncer((t)=>copy(t), 100));
@@ -1164,6 +1199,7 @@
                             ctxQuote: '引用',
                             ctxQuoted: '已引用',
                             ctxCancel: '取消选中/删除',
+                            ctxLike: '+1',
                             // userinfo do NOT use the same prefix as dataPrefix
                             userNick: 'marker_userNick',
                             userMail: 'marker_userMail',
@@ -1179,12 +1215,14 @@
                             tool: 'tools',
                             toolIn: 'toolInside',
                             mark: 'mark',
-                            copy: 'copy',
                             note: 'note',
+                            copy: 'copy',
                             quote: 'quote',
+                            like: 'like',
                             update: 'update',
                             close: 'close',
                             done: 'done',
+                            avatars: 'avatars',
                             disabled: 'disabled',
                             underline: 'underline',
                             processing: 'processing',

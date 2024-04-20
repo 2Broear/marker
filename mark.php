@@ -27,6 +27,7 @@
     define('REQUEST_nick', get_request_param('nick'));
     define('REQUEST_text', get_request_param('text'));
     define('REQUEST_note', get_request_param('note'));
+    define('REQUEST_like', get_request_param('like'));
     define('SAVE_prefix', 'marker-' . REQUEST_pid);
     define('EXEC_fetch', get_request_param('fetch'));
     define('EXEC_count', get_request_param('count'));
@@ -174,9 +175,9 @@
                     if(isset($_marker)){
                         $exists_records = false; // not exist
                         $exists_code = 403; // guest
-                        foreach ($_marker as $index => &$item) {
+                        foreach ($_marker as $index => $item) {
                             if(!is_array($item)) continue;
-                            foreach ($item as &$obj) {
+                            foreach ($item as $obj) {
                                 if(!is_object($obj)) continue;
                                 if(REQUEST_text === $obj->text) {
                                     if(REQUEST_mail === $obj->mail) $exists_code = 400; // admin
@@ -191,21 +192,35 @@
                             $exists_date = $exists_records->date;
                             switch ($exists_code) {
                                 case 400:
-                                    $exists_msg = 'you might marked this content already? (rid#'.$exists_rid.' in '.$exists_date.')';
+                                    $exists_msg = 'Exists context detected! you might marked this content already? (rid#'.$exists_rid.' in '.$exists_date.')';
                                     break;
                                 case 403:
                                 default:
-                                    $exists_msg = 'record (#'.$exists_rid.'): "'.$exists_records->text.'" has already marked by '.$exists_records->nick.' at '.$exists_date.' on '.SAVE_prefix;
+                                    $exists_nick = $exists_records->nick;
+                                    // non-noted requirement..
+                                    if(REQUEST_like && !isset($exists_records->note)) {
+                                        $exists_like = &$exists_records->like; // $memory_quote of like
+                                        if(isset($exists_like) && in_array(REQUEST_like, $exists_like)) {
+                                            $exists_msg = 'you liked this mark(#'.$exists_rid.') already!';
+                                            break;
+                                        }
+                                        if(!isset($exists_like)) $exists_like = array();
+                                        array_push($exists_like, REQUEST_like);
+                                        $exists_code = 200; // no alert on abort
+                                        $exists_msg = 'you liked mark(#'.$exists_rid.') which is marked by '.$exists_nick;
+                                    }else{
+                                        $exists_msg = 'Exists context detected! record (#'.$exists_rid.'): "'.$exists_records->text.'" has already marked by '.$exists_nick.' at '.$exists_date.' on '.SAVE_prefix;
+                                    }
                                     break;
                             }
-                            $result_stats = get_update_status('Exists context detected! '.$exists_msg, $exists_code);
+                            $result_stats = get_update_status($exists_msg, $exists_code);
                         }else{
                             $exists_marker = &$_marker[SECURED_mid]; // user records(local compare)
-                            $exists_marker = array_values($exists_marker); // 重新索引数组，避免数组索引混乱（手动删除 mark_data ）时导致新增用户数据被覆盖
                             // 已存在用户（mid）且不为“空”
-                            if(isset($exists_marker) && isset($exists_marker[0]->mail)){
+                            if(isset($exists_marker)){
+                                $exists_marker = array_values($exists_marker); // 重新索引数组，避免数组索引混乱（手动删除 mark_data ）时导致新增用户数据被覆盖
                                 // 请求 mail 参数匹配本地用户 mail
-                                if(REQUEST_mail === $exists_marker[0]->mail){ // No ts verification(SECURED_tid === $exists_marker[0]->tid)
+                                if(isset($exists_marker[0]->mail)&& REQUEST_mail === $exists_marker[0]->mail){ // No ts verification(SECURED_tid === $exists_marker[0]->tid)
                                     array_push($exists_marker, $new_mark); // push current user
                                 }else{
                                     $result_stats = get_update_status('user mail verification failure #'.REQUEST_mail, 403);
