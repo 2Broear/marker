@@ -49,7 +49,11 @@ new marker.init();
 | lineBold | Number | 标记线粗（基本） | 默认 `15` |
 | lineBoldMax | Number | 标记线粗（悬浮） | 默认 `30` |
 | lineAnimate | Boolean | 标记划线动画 | 默认 `true` |
-| lineKeepUp | Boolean | 标记（默认）始终显示 | 默认 `false` |
+| lineKeepTop | Boolean | 始终显示标记 | 默认 `false` |
+|  |  |  |  |
+| useNote | Boolean | 开启注释功能 | 默认 `true` |
+| useCopy | Boolean | 开启复制功能 | 默认 `true` |
+| useQuote | Boolean | 开启引用功能 | 默认 `true` |
 |  |  |  |  |
 | ctxMark | String | 标记文本 | 默认 `标记` |
 | ctxMarking | String | 标记中文本 | 默认 `标记中` |
@@ -71,15 +75,16 @@ new marker.init();
 | tool | String | 元素：标记功能元素 | 默认 `tools` |
 | toolIn | String | 元素：同上 | 默认 `toolInside` |
 | mark | String | 元素：标记划线元素 | 默认 `mark` |
+| note | String | 元素：标记注释元素 | 默认 `note` |
 | copy | String | 元素：标记复制元素 | 默认 `copy` |
 | quote | String | 元素：标记引用元素 | 默认 `quote` |
 | update | String | 元素：标记更新元素 | 默认 `update` |
 | close | String | 元素：标记删除元素 | 默认 `close` |
 | done | String | 状态：标记完成 | 默认 `done` |
 | disabled | String | 状态：禁用标记 | 默认 `disabled` |
-| aniProcess | String | 状态：标记执行 | 默认 `aniProcess` |
-| aniUnderline | String | 状态：标记动画 | 默认 `aniUnderline` |
-| blackList | String | 数组：禁止选中 class 元素列表 | 默认 `['wp-block-quote','wp-block-code','wp-block-table','wp-element-caption']` |
+| underline | String | 状态：标记动画 | 默认 `underline` |
+| processing | String | 状态：标记执行 | 默认 `processing` |
+| blackList | String | 数组：禁止选中 class 元素列表 | 默认 `['markable','wp-block-quote','wp-block-code','wp-block-table','wp-element-caption']` |
 
 #### element-> 元素参数
 | 参数 | 类型 | 描述 | 备注 |

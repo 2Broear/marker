@@ -3,22 +3,46 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineKeepUp:s_lineKeepUp, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, }, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
-                let _conf = marker.init._conf,// {static: {dataCount:s_dataCount}, element: {line:e_line, tool:e_tool}} = _conf,
-                    _element = _conf.element,
-                    marks = document.createElement("a"),
-                    tools = document.createElement("div"),
-                    style = document.createElement('style');
+                let _conf = marker.init._conf,
+                    style = document.createElement('STYLE'),
+                    marks = document.createElement("A"),
+                    tools = document.createElement("DIV"),
+                    toolsInside = document.createElement("DIV"),
+                    toolsLoader = (container, cls, title, content)=> {
+                        let toolsDivider = document.createElement("I"),
+                            useContainer = document.createElement("SPAN");
+                        toolsDivider.innerHTML = "&nbsp;|&nbsp;";
+                        container.appendChild(toolsDivider);
+                        useContainer.className = cls;
+                        useContainer.title = title;
+                        useContainer.innerHTML = content;
+                        container.appendChild(useContainer);
+                    };
                 marks.className = c_line;
-                marks.href = 'javascript:;';
+                marks.href = 'javascript:void(0);';
                 marks.rel = 'nofollow';
-                tools.className = c_tool; // tools.setAttribute('onselectstart','return false;');
-                tools.innerHTML = `<div class="${c_toolIn}"><span class="${c_mark}" style="" title="划线${s_ctxMark}">${s_ctxMark}</span><i>&nbsp;|&nbsp;</i><span class="${c_note}" title="${s_ctxNote}内容"><label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" /></span><i>&nbsp;|&nbsp;</i><span class="${c_quote}" title="评论${s_ctxQuote}" onclick="marker.mods.quote(this)">${s_ctxQuote}</span><i>&nbsp;|&nbsp;</i><span class="${c_copy}" title="${s_ctxCopy}内容" onclick="marker.mods.copy(this)">${s_ctxCopy}</span><span class="${c_close}" title="${s_ctxCancel}"></span></div>`; // onclick="marker.mods.close(this, true)" onclick="marker.mods.down(this)" <img src="" alt="avatar" />
+                _conf.element.line = marks; //e_line
+                tools.className = c_tool;
+                toolsInside.className = c_toolIn;
+                // load basic mark
+                toolsLoader(toolsInside, c_mark, `划线${s_ctxMark}`, s_ctxMark);
+                // selectively load tools
+                if(s_useNote) toolsLoader(toolsInside, c_note, `${s_ctxNote}内容`, `<label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" />`);
+                if(s_useCopy) toolsLoader(toolsInside, c_copy, `${s_ctxCopy}内容`, s_ctxCopy);
+                if(s_useQuote) toolsLoader(toolsInside, c_quote, `评论${s_ctxQuote}`, s_ctxQuote);
+                // always load closer(selectively remove)
+                const tool_close = document.createElement('SPAN');
+                tool_close.className = c_close;
+                tool_close.title = s_ctxCancel;
+                toolsInside.appendChild(tool_close);
+                tools.appendChild(toolsInside);
+                _conf.element.tool = tools; //e_tool
                 if(s_lineAnimate) {
                     style.textContent = `@keyframes ${c_underline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_processing}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 }
-                if(s_lineKeepUp) {
+                if(s_lineKeepTop) {
                     style.textContent += `a.${c_line} .${c_tool}{padding:10px 0 50px!important;opacity:1!important;}a.${c_line}.${c_done} .${c_tool} .${c_note}{margin:0 0 10px 10px!important;}`;
                 }
                 style.textContent += `
@@ -48,6 +72,7 @@
                     a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 2px 8px;color: inherit;border: 1px solid currentColor;background: transparent;}
                     a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .15s ease;border:none;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
+                    a.${c_line} .${c_tool} i:first-of-type,
                     a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
                     a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;margin: 5px 5px 5px 0!important;}
                     a.${c_line} .${c_tool} i{font-style:normal;}
@@ -55,9 +80,10 @@
                     a.${c_line} .${c_tool} img,
                     a.${c_line} .${c_tool} span{display: inline-block;vertical-align: middle;margin:auto;}
                     a.${c_line} .${c_tool} span:hover{font-weight:bold;}
-                    a.${c_line} .${c_tool} i,
                     a.${c_line}.${c_disabled} .${c_tool} span,
+                    a.${c_line} .${c_tool} i,
                     a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;pointer-events:none;}
+                    a.${c_line} .${c_tool} i{opacity:.35;}
                     a.${c_line} .${c_tool} span{cursor:pointer;}
                     a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:12%;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
                     a.${c_line} .${c_tool} span.${c_close}::after{transform:translate(-50%,-50%) rotate(-45deg);}
@@ -68,8 +94,6 @@
                     a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border-radius:50%;position:absolute;top:-5px;right:-5px;}
                 `;
                 document.head.appendChild(style);
-                _element.tool = tools; //e_tool
-                _element.line = marks; //e_line
                 // fetch data.
                 fetch("", {
                     'fetch': 1,
@@ -100,7 +124,7 @@
                             }
                         },
                         _outputMarkers = ()=> {
-                            const {code, msg = 'no message found.'} = res;
+                            const {code, msg = 'no messages.'} = res;
                             const localMarks = Object.keys(d_list);
                             if(code && code!==200) {
                                 console.log('Abort on _outputMarkers:', msg);
@@ -114,18 +138,17 @@
                                 return;
                             }
                             // 输出 所有用户标记
-                            let _static = _conf.static;
                             Object.keys(res).forEach(user=> {
                                 let userMarks = Object.values(res[user]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                                 // console.log(userMarks)
                                 if(!userMarks || userMarks==null) return;
                                 // compare curUserMid is curUser, then update currentUserCounts from remote
-                                if(d_mid === user){
+                                if(d_mid === user) {
                                     let remote_counts = userMarks.length;
-                                    _static.dataCount = remote_counts; //s_dataCount
+                                    _conf.static.dataCount = remote_counts; //s_dataCount
                                     marker.data = {counts: remote_counts}; //s_dataCount
                                     // 冻结 _conf 对象 static 成员 for dataCount edit limits
-                                    Object.freeze(_static);
+                                    Object.freeze(_conf.static);
                                 }
                                 userMarks.forEach(mark=> {
                                     const {nick, text, date, uid, rid, note} = mark;
@@ -135,10 +158,14 @@
                                         tool_inside = finder(frag_tool, c_toolIn, 1),
                                         tool_mark = finder(frag_tool, c_mark, 1),
                                         tool_note = finder(frag_tool, c_note, 1),
-                                        tool_avatar = new Image(), //document.createElement('img'),
+                                        tool_avatar = new Image(),
                                         mark_indexes = uid.match('(\\d+)-(\\d+)'),
                                         mark_index = mark_indexes[1],
                                         mark_paragraph = e_effectsArea.children[mark_index];
+                                    if(d_mid !== user) {
+                                        // remove close button if does not belongs
+                                        // finder(frag_tool, c_close, 1).remove();
+                                    }
                                     if(!mark_paragraph.textContent.includes(text)){
                                         console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
                                         const effectChildNodes = e_effectsArea.children;
@@ -164,7 +191,7 @@
                                     if(note&&note.length >= 1) {
                                         tool_mark.nextElementSibling.remove(); // "|"
                                         finder(tool_note, "", 1, "label").textContent = note;
-                                        finder(tool_note, "", 1, "input").remove();
+                                        // finder(tool_note, "", 1, "input").remove();
                                         markedContext = nick;
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
@@ -434,7 +461,7 @@
                     return Object.prototype.toString.call(obj)==='[object Object]';
                 },
                 dynamicLoad: (jsUrl, fn)=> {
-                    const script = document.createElement('script');
+                    const script = document.createElement('SCRIPT');
                     script.type = 'text/javascript';
                     script.async = true;
                     script.src = jsUrl;
@@ -537,7 +564,7 @@
                             'fetch': 1,
                             'count': 1,
                         }, (res) => {
-                            const {code, msg = 'no message found.'} = res;
+                            const {code, msg = 'no messages.'} = res;
                             if(code&&code==200) {
                                 let res_counts = parseInt(msg),
                                     max_reached = res_counts >= maxDataLength;
@@ -773,7 +800,7 @@
                           mark_indexes = indexer(mark_paragraph) + '-' + paragraph_context.indexOf(mark_text),
                           mark_note = finder(mark_node, c_note, 1),
                           mark_input = finder(mark_note, "", 1, "input"),
-                          mark_inputs = mark_input.value;
+                          mark_inputs = valider(mark_input) ? mark_input.value : "";
                     update({
                         rid: mark_rid,
                         uid: mark_indexes,
@@ -815,7 +842,7 @@
                 }
                 input_box.focus();
                 if(input_box.oninput) {
-                    console.log('on-input has registered!');
+                    console.debug('on-input has registered!');
                     return;
                 }
                 input_box.oninput = input_box.onpropertychange = function() {
@@ -921,9 +948,10 @@
                         'rid': rid,
                         'ts': stored_ts, //ts ? ts : stored_ts,
                     }, (res)=> {
-                        const {code, msg = 'no message found.'} = res;
+                        const {code, msg = 'no messages.'} = res;
                         if(code && code!=200){
                             alert(`${msg}（err#${code}）`);
+                            if(code===403) console.warn("非法行为！！随意删除他人标记是不被允许的哦..");
                             if(node&&node.classList) node.classList.remove(cls);
                             marker.data = {counts: d_counts}; // restore counts on error
                             _adjustPending(0);  // pending abort..
@@ -951,7 +979,7 @@
                     "note": note,
                     'ts': realtime_ts,
                 }, (res)=> {
-                    const {code, msg = 'no message found.'} = res;
+                    const {code, msg = 'no messages.'} = res;
                     if(code && code!=200){
                         alert(`${msg}（err#${code}）`);
                         if(node) node.textContent = s_ctxMarked;
@@ -999,7 +1027,8 @@
                     }
                     const fetchPromise = fetch(url, {
                         // method: type,
-                        // data: JSON.stringify(data)
+                        // data: JSON.stringify(data),
+                        keepalive: true,
                     }).then(response => {
                         if(!response.ok) throw new Error('Network err');
                         return response.json();
@@ -1019,11 +1048,11 @@
         },
         __proto__: {
             init: function(user_conf = {}){
-                const _this = Object.getPrototypeOf(this)!==marker.init.prototype ? marker.init.prototype : this;
                 try {
-                    const _conf_res = _this._singleton_conf._rewriter.call(_this, user_conf);
+                    const that = Object.getPrototypeOf(this)!==marker.init.prototype ? marker.init.prototype : this,
+                          _conf_res = that._singleton_conf._rewriter.call(that, user_conf);
                     // 冻结 _conf、_conf.static 对象成员（）
-                    Object.freeze(_conf_res); // Object.freeze(_conf_res.static); //for dataMax limitation
+                    Object.freeze(_conf_res);
                     // rewrite user-conf
                     marker.init._conf = _conf_res;
                     // 防止重写 _conf 对象
@@ -1034,16 +1063,15 @@
                     // init&load dom..
                     marker.dom.initiate(marker);
                     // check marker status before initiate.(prevent mouseup events exec mark())
-                    const {init: {_conf: {class: {close:c_close, mark:c_mark, note:c_note}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, close}} = marker; // _event
-                    if(!isMarkerAvailable()) {
-                        throw new Error('marker unavailable, register init failed..');
-                    }
+                    const {init: {_conf: {static: {useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {close:c_close, mark:c_mark, note:c_note, copy:c_copy, quote:c_quote}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, copy, quote, close}} = marker; // _event
+                    if(!isMarkerAvailable()) throw new Error('marker unavailable, register init failed..');
                     // bind events
-                    // _event.add(e_effectsArea, 'mouseup', debouncer(mark.bind(window.getSelection()), 100));
                     addEvent(e_effectsArea, 'mouseup', debouncer(mark.bind(window.getSelection()), 100)); // addEvent this enviroument changed!!
+                    clicker(e_effectsArea, c_mark, debouncer((t)=>down(t)));
                     clicker(e_effectsArea, c_close, debouncer((t)=>close(t, true), 150));
-                    clicker(e_effectsArea, c_mark, debouncer((t)=>down(t), 200));
-                    clicker(e_effectsArea, c_note, debouncer((t)=>note(t), 200));
+                    if(s_useNote) clicker(e_effectsArea, c_note, debouncer((t)=>note(t)));
+                    if(s_useCopy) clicker(e_effectsArea, c_copy, debouncer((t)=>copy(t), 100));
+                    if(s_useQuote) clicker(e_effectsArea, c_quote, debouncer((t)=>quote(t), 100));
                     // clicker(e_effectsArea, '', (t)=>console.log('h2 clicked.',t), 'h2');
                     console.log('marker initialized.', marker);
                 } catch (error) {
@@ -1051,7 +1079,7 @@
                 }
             },
         },
-        get data(){
+        get data() {
             const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get: getCookie}}} = this;
             const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
                   stored = document.cookie.match(regExp) || [];
@@ -1081,7 +1109,7 @@
                 '_counts': s_dataCount,
             };
         },
-        set data(obj){
+        set data(obj) {
             const {init: {_conf: {setter}}, _utils: {_etc: {isObject}}} = this;
             if(!isObject(obj)) {
                 console.warn('set data error: typeof obj is not an Object!', obj);
@@ -1110,7 +1138,7 @@
                         static: {
                             dataMin: 2,
                             dataMax: 3,
-                            dataDelay: 1000,
+                            dataDelay: 500,
                             dataAlive: 365,
                             dataCount: 0,
                             dataPrefix: 'marker-',
@@ -1121,7 +1149,10 @@
                             lineBold: 15,
                             lineBoldMax: 30,
                             lineAnimate: true,
-                            lineKeepUp: false,
+                            lineKeepTop: false,
+                            useNote: true,
+                            useCopy: true,
+                            useQuote: true,
                             ctxMark: '标记',
                             ctxMarking: '标记中..',
                             ctxMarked: '已标记',
