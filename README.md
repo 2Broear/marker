@@ -4,7 +4,7 @@ a local-storage(php based) javascript api marking-off plugin.
 #### 功能简介
 
 - 多人划线标记（多评论系统共用）
-- 划线文本引用、复制、注释
+- 划线文本引用、复制、注释（他人非注释标记可点赞）
 - 用户本地浏览器 + 远程服务端双校验
 - 本地储存（localStorage+Cookie）验证记录
 - 大量自定义初始化参数（文本、元素、class..）
@@ -64,6 +64,7 @@ new marker.init();
 | ctxCopied | String | 标记已复制文本 | 默认 `已复制` |
 | ctxQuote | String | 标记引用文本 | 默认 `引用` |
 | ctxQuoted | String | 标记已引用文本 | 默认 `已引用` |
+| ctxLike | String | 标记点赞文本 | 默认 `+1` |
 | ctxCancel | String | 取消标记文本 | 默认 `取消选中/删除` |
 
 #### class-> 静态参数
@@ -74,12 +75,13 @@ new marker.init();
 | tool | String | 元素：标记功能元素 | 默认 `tools` |
 | toolIn | String | 元素：同上 | 默认 `toolInside` |
 | mark | String | 元素：标记划线元素 | 默认 `mark` |
+| done | String | 状态：标记完成 | 默认 `done` |
 | note | String | 元素：标记注释元素 | 默认 `note` |
 | copy | String | 元素：标记复制元素 | 默认 `copy` |
 | quote | String | 元素：标记引用元素 | 默认 `quote` |
+| like | String | 元素：标记点赞元素 | 默认 `like` |
 | update | String | 元素：标记更新元素 | 默认 `update` |
 | close | String | 元素：标记删除元素 | 默认 `close` |
-| done | String | 状态：标记完成 | 默认 `done` |
 | disabled | String | 状态：禁用标记 | 默认 `disabled` |
 | underline | String | 状态：标记动画 | 默认 `underline` |
 | processing | String | 状态：标记执行 | 默认 `processing` |

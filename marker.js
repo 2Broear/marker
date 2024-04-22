@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote, likeMax:s_likeMax}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,
                     style = document.createElement('STYLE'),
@@ -26,13 +26,15 @@
                 _conf.element.line = marks; //e_line
                 tools.className = c_tool;
                 toolsInside.className = c_toolIn;
+                const tool_avatars = document.createElement('DIV');
+                tool_avatars.className = c_avatars;
+                toolsInside.appendChild(tool_avatars);
                 // load basic mark
                 toolsLoader(toolsInside, c_mark, `划线${s_ctxMark}`, s_ctxMark);
                 // selectively load tools
                 if(s_useNote) toolsLoader(toolsInside, c_note, `${s_ctxNote}内容`, `<label>${s_ctxNote}</label><input type="text" placeholder="输入注释.." max="50" />`);
                 if(s_useCopy) toolsLoader(toolsInside, c_copy, `${s_ctxCopy}内容`, s_ctxCopy);
                 if(s_useQuote) toolsLoader(toolsInside, c_quote, `评论${s_ctxQuote}`, s_ctxQuote);
-                toolsLoader(toolsInside, c_like, `认同${s_ctxLike}👍`, s_ctxLike);
                 // always load closer(selectively remove)
                 const tool_close = document.createElement('SPAN');
                 tool_close.className = c_close;
@@ -55,11 +57,13 @@
                     a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
                     a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
                     body.dark a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
-                    body.dark a.${c_line} .${c_tool} .${c_note} label{color: white;}
+                    body.dark a.${c_line} .${c_tool} .${c_note} label,
+                    body.dark a.${c_line} .${c_tool} .${c_note} input{color: white;}
                     body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
                     @media (prefers-color-scheme: dark) {
                         a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
-                        a.${c_line} .${c_tool} .${c_note} label{color: white;}
+                        a.${c_line} .${c_tool} .${c_note} label,
+                        a.${c_line} .${c_tool} .${c_note} input{color: white;}
                         a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
                     }
                     a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
@@ -75,7 +79,8 @@
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
                     a.${c_line} .${c_tool} i:first-of-type,
                     a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
-                    a.${c_line} .${c_tool} .${c_avatars}{margin: 3px 5px 2px 10px;display: inline-block;line-height: normal;vertical-align: middle;}
+                    a.${c_line}.${c_done} .${c_tool} .${c_avatars}{margin:3px 5px 2px 10px;}
+                    a.${c_line} .${c_tool} .${c_avatars}{margin: 3px 5px 2px 0px;display: inline-block;line-height: normal;vertical-align: middle;}
                     a.${c_line} .${c_tool} img:first-of-type{left:0;border:0;}
                     a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;display:block;margin:0;border: 2px solid white;box-sizing: content-box;margin-left:-10px!important;/*position:relative;left:-10px;*/}
                     a.${c_line} .${c_tool} i{font-style:normal;}
@@ -93,8 +98,11 @@
                     a.${c_line} .${c_tool} span.${c_close}:hover::before,a.${c_line} .${c_tool} span.${c_close}:hover::after{height:18%;}
                     a.${c_line}.${c_processing} .${c_tool} span.${c_close}{animation:${c_processing} linear 1s infinite;-webkit-animation:${c_processing} linear 1s infinite;pointer-events:none;}
                     /*a.${c_line}.${c_processing} .${c_tool} span.${c_close},*/
+                    a.${c_line} .${c_tool} span.${c_like}:hover,
                     a.${c_line} .${c_tool} span.${c_close}:hover{transform:scale(1.25);-webkit-transform:scale(1.25)}
+                    a.${c_line} .${c_tool} span.${c_like},
                     a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border-radius:50%;position:absolute;top:-5px;right:-5px;}
+                    a.${c_line} .${c_tool} span.${c_like}{width:auto;height:auto;font-weight:bold;font-size:10px;line-height:12px;padding:1px 5px;margin:-5px;border-radius:25px;background:limegreen;}
                 `;
                 document.head.appendChild(style);
                 // fetch data.
@@ -154,7 +162,8 @@
                                     Object.freeze(_conf.static);
                                 }
                                 userMarks.forEach(mark=> {
-                                    const {nick, text, date, uid, rid, note, like} = mark;
+                                    const {nick, text, date, uid, rid, note, like} = mark,
+                                          isOtherUserMark = user !== d_mid;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
                                         frag_tool = tools.cloneNode(true), 
@@ -165,7 +174,7 @@
                                         mark_index = mark_indexes[1],
                                         mark_paragraph = e_effectsArea.children[mark_index];
                                     // remove close button if marker does not belongs
-                                    if(d_mid !== user) finder(frag_tool, c_close, 1).remove();
+                                    if(isOtherUserMark) finder(frag_tool, c_close, 1).remove();
                                     // traversal context nodes
                                     if(!mark_paragraph.textContent.includes(text)){
                                         console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
@@ -180,28 +189,26 @@
                                         console.log(`traversal done. found(indexOf ${text}) on mark_uid:`, mark_index);
                                     }
                                     // load users avatar
-                                    const tool_avatar = new Image(),
-                                          tool_avatars = document.createElement('DIV');
-                                    tool_avatars.className = c_avatars;
+                                    const tool_avatars = finder(tool_inside, c_avatars, 1), // update append-avatars dom
+                                          tool_avatar = new Image();
                                     tool_avatar.alt = nick;
                                     tool_avatar.src = `${s_avatar}avatar/${user}?d=mp&s=100&v=1.3.10`;
                                     tool_avatars.appendChild(tool_avatar);
                                     let multUserMarkContext = ` ${s_ctxMarked}`;
+                                    // like = Object.values(like); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                                     if(like&&like.length>=1) {
-                                        const multUserLikeLimit = 2,
-                                              multUserMarkExtra = like.length>multUserLikeLimit ? like.length - multUserLikeLimit : "";
+                                        const multUserMarkExtra = like.length>s_likeMax ? like.length - s_likeMax : "";
                                         multUserMarkContext = ` 等${multUserMarkExtra}人${s_ctxMarked}`;
                                         const avatar_fragment = document.createDocumentFragment();
                                         for(let i=0;i<like.length;i++) {
-                                            if(i>=multUserLikeLimit) break;
-                                            let temp_avatar = new Image();
+                                            if(i>=s_likeMax) break;
+                                            const temp_avatar = new Image();
                                             temp_avatar.alt = like[i];
                                             temp_avatar.src = `${s_avatar}avatar/${like[i]}?d=mp&s=100&v=1.3.10`;
                                             avatar_fragment.appendChild(temp_avatar);
                                         }
                                         tool_avatars.appendChild(avatar_fragment);
                                     }
-                                    tool_inside.insertBefore(tool_avatars, tool_inside.firstChild);
                                     frag_mark.classList.add(c_done);
                                     frag_mark.textContent = text;
                                     frag_mark.dataset.uid = uid;
@@ -209,18 +216,21 @@
                                     frag_mark.title = `${nick} marked at ${date}`;
                                     tool_mark.className = `${c_mark} ${c_disabled}`;
                                     let markedContext = nick + multUserMarkContext;
-                                    if(note) {
-                                        const tool_like = finder(frag_tool, c_like, 1);
-                                        tool_like.previousElementSibling.remove(); // "|"
-                                        tool_like.remove(); // always remove like button on noted marker
-                                        if(note.length >=1 ) {
-                                            tool_mark.nextElementSibling.remove(); // "|"
-                                            finder(tool_note, "", 1, "label").textContent = note;
-                                            markedContext = nick;
-                                        }
+                                    if(note&&note.length >=1) {
+                                        tool_mark.nextElementSibling.remove(); // "|"
+                                        finder(tool_note, "", 1, "label").textContent = note;
+                                        markedContext = nick;
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
+                                        // additional like button only if not(noted) others mark
+                                        if(isOtherUserMark) {
+                                            const tool_like = document.createElement('SPAN');
+                                            tool_like.className = c_like;
+                                            tool_like.title = `认同${s_ctxLike}👍`;
+                                            tool_like.textContent = s_ctxLike;
+                                            tool_inside.appendChild(tool_like);
+                                        }
                                     }
                                     tool_mark.textContent = markedContext;
                                     frag_mark.appendChild(frag_tool);
@@ -389,6 +399,26 @@
                     var cval = marker._utils._cookie.get(name); // that = this&&this.get ? this : marker._utils._cookie;
                     if(cval!=null){
                         document.cookie = name+"="+cval+";expires="+exp.toGMTString()+";path="+path;
+                    }
+                },
+            },
+            _storage: {
+                set: (name="", data={})=> {
+                    try {
+                        if(marker._utils._etc.isObject(data)) data = JSON.stringify(data);
+                        window.localStorage.setItem(name, data);
+                        console.log('localStorage saved');
+                    } catch (e) {
+                        console.warn(e);
+                        return null;
+                    }
+                },
+                get: (name="")=> {
+                    try {
+                        return window.localStorage.getItem(name);
+                    } catch (e) {
+                        console.warn(e);
+                        return null;
                     }
                 },
             },
@@ -782,7 +812,7 @@
                     console.warn(error);
                 }
             },
-            down: function(node, verify_updates=true) {
+            down: function(node, verify_updates=true) {  // verify_updates means standard mark-down(no like-down)
                 const {init: {_conf: {static: {ctxMarking:s_ctxMarking, ctxMarked:s_ctxMarked, ctxMarkMax:s_ctxMarkMax, ctxLike:s_ctxLike, avatar:s_avatar}, class: {line:c_line, done:c_done, note:c_note, disabled:c_disabled, avatars:c_avatars}, element: {effectsArea:e_effectsArea}}}, data: {stat: {pending:d_pending}, user: {nick:d_nick,mid:d_mid}}, _utils: {_dom: {finder, valider, indexer}}, status: {isNodeMarkDone, isMultiSameChar, isMarkerReachedMax}, mods: {update}} = marker;
                 if(d_pending) {
                     console.warn('Abort on too-fast marking off! (wait a second then try to re-mark again.)');
@@ -833,7 +863,7 @@
                         rid: mark_rid,
                         uid: mark_indexes,
                         text: mark_text,
-                        like: d_mid,
+                        like: verify_updates ? 0 : d_mid,
                         note: mark_inputs,
                         node: node,
                     }, (res)=> {
@@ -842,10 +872,12 @@
                         mark_node.dataset.uid = mark_indexes;
                         node.classList.add(c_disabled);
                         // mark "done"
-                        const user_avatar = new Image();
+                        const user_avatars = finder(mark_node, c_avatars, 1),
+                              user_avatar = new Image();
                         user_avatar.alt = d_nick;
                         user_avatar.src = `${s_avatar}avatar/${d_mid}?d=mp&s=100&v=1.3.10`;
-                        finder(mark_node, c_avatars, 1).appendChild(user_avatar);
+                        // user_avatars.style.marginLeft = '-2px';
+                        user_avatars.appendChild(user_avatar);
                         let markedContext = `${d_nick} ${s_ctxMarked}`;
                         if(mark_note) {
                             mark_note.nextElementSibling.remove(); // "|"
@@ -958,7 +990,7 @@
                 update_dom();
             },
             update: function(updObj={}, cbk=false, del=false) {
-                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set: setCookie, del: delCookie}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set:setCookie, del:delCookie}, _storage: {set:setStorage, get:getStorage}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
                 // changes required
                 let {counts:d_counts} = marker.data.stat;
                 if(!isObject(updObj) || Object.keys(updObj).length<1) {
@@ -1022,14 +1054,18 @@
                     if(like) {
                         console.log(msg);
                     }else{
-                        // record of localStorage(ts caches for del)
-                        let ts_caches = window.localStorage.getItem(s_dataCaches);
-                        ts_caches = ts_caches ? JSON.parse(ts_caches) : {};
-                        ts_caches[mark_cname] = realtime_ts;
-                        window.localStorage.setItem(s_dataCaches, JSON.stringify(ts_caches));
-                        // update(add) cookies Immediately(dual-check insurance)
-                        setCookie(mark_cname, realtime_ts, d_path, s_dataAlive);
-                        console.log(`${mark_cname} updated(ts: ${realtime_ts}) `, msg);
+                        try {
+                            let ts_caches = getStorage(s_dataCaches);
+                            ts_caches = ts_caches ? JSON.parse(ts_caches) : {};
+                            ts_caches[mark_cname] = realtime_ts;
+                            // record of localStorage(ts caches for del)
+                            setStorage(s_dataCaches, JSON.stringify(ts_caches));
+                            // update(add) cookies Immediately(dual-check insurance)
+                            setCookie(mark_cname, realtime_ts, d_path, s_dataAlive);
+                            console.log(`${mark_cname} updated(ts: ${realtime_ts}) `, msg);
+                        } catch (e) {
+                            console.warn(e);
+                        }
                     }
                     _adjustPending(0, ()=> {
                         funValidator(cbk) ? cbk(res) : console.log('update(add) succesed(no calls)', msg);
@@ -1115,7 +1151,7 @@
             },
         },
         get data() {
-            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get: getCookie}}} = this;
+            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get:getCookie}, _storage: {get:getStorage}}} = this;
             const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
                   stored = document.cookie.match(regExp) || [];
             let result = {};
@@ -1140,7 +1176,7 @@
                 },
                 'list': result,
                 'path': window.location.pathname,
-                '_caches': window.localStorage.getItem(s_dataCaches) || '{}',
+                '_caches': getStorage(s_dataCaches) || '{}',
                 '_counts': s_dataCount,
             };
         },
@@ -1171,6 +1207,7 @@
             value: function(){
                 let presetConfs = {
                         static: {
+                            likeMax: 2,
                             dataMin: 2,
                             dataMax: 3,
                             dataDelay: 500,
