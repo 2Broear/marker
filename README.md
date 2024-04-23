@@ -10,7 +10,8 @@ a local-storage(php based) javascript api marking-off plugin.
 - 大量自定义初始化参数（文本、元素、class..）
 - 可配置生效选区、选区内禁止选中黑名单
 - 可配置最大标记数量、最小选中字符长度
-- 可配置标记颜色（可选渐变、角度）、标记粗细、标记保存时效
+- 可配置标记颜色（可选渐变、角度）、标记粗细
+- 可配置标记（保存、校验）时效
 - 可配置开启或关闭标记动画、标记功能组件
 
 ![marker](https://raw.githubusercontent.com/2Broear/marker/main/marker2.gif "marker.gif")
@@ -34,10 +35,11 @@ new marker.init();
 | avatar | String | 标记用户 gravatar 头像镜像源 | 默认 `//cravatar.com/` |
 | postId | String | 标记文章唯一标识符 | 默认 `window.location.pathname` |
 |  |  |  |  |
-| dataMin | Number | 最小标记文本字符长度 | 默认 `2` |
+| likeMax | Number | 多用户标记头像最大数量 | 默认 `2` |
 | dataMax | Number | 最大标记数量 | 默认 `3` |
+| dataMin | Number | 最小标记文本字符长度 | 默认 `2` |
 | dataDelay | Number | 模拟标记延迟 | 默认 `500` |
-| dataAlive | Number | 本地验证数据储存时效 | 默认 `365` |
+| dataAlive | Number | 标记（本地校验数据）储存时效 | 默认 `365` |
 | dataCount | Number | 用户远程标记数量（页面刷新时自动初始化） | 默认 `0` |
 | dataPrefix | String | 本地储存（cookie）前缀 | 默认 `marker-` |
 | dataCaches | String | 本地储存（localStorage）前缀 | 默认 `markerCaches` |
@@ -85,7 +87,7 @@ new marker.init();
 | disabled | String | 状态：禁用标记 | 默认 `disabled` |
 | underline | String | 状态：标记动画 | 默认 `underline` |
 | processing | String | 状态：标记执行 | 默认 `processing` |
-| blackList | String | 数组：禁止选中 class 元素列表 | 默认 `['markable','wp-block-quote','wp-block-code','wp-block-table','wp-element-caption']` |
+| blackList | Array | 禁止选中 class 元素列表 | 默认 `['markable','wp-block-quote','wp-block-code','wp-block-table','wp-element-caption']` |
 
 #### element-> 元素参数
 | 参数 | 类型 | 描述 | 备注 |

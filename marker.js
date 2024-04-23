@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote, likeMax:s_likeMax}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote, likeMax:s_likeMax}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder, valider}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,
                     style = document.createElement('STYLE'),
@@ -174,7 +174,10 @@
                                         mark_index = mark_indexes[1],
                                         mark_paragraph = e_effectsArea.children[mark_index];
                                     // remove close button if marker does not belongs
-                                    if(isOtherUserMark) finder(frag_tool, c_close, 1).remove();
+                                    if(isOtherUserMark) {
+                                        const close_btn = finder(frag_tool, c_close, 1);
+                                        close_btn.remove(); //if(valider(close_btn)) 
+                                    }
                                     // traversal context nodes
                                     if(!mark_paragraph.textContent.includes(text)){
                                         console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
@@ -224,7 +227,7 @@
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
                                         // additional like button only if not(noted) others mark
-                                        if(isOtherUserMark) {
+                                        if(isOtherUserMark && isMarkerAccessable()) {
                                             const tool_like = document.createElement('SPAN');
                                             tool_like.className = c_like;
                                             tool_like.title = `认同${s_ctxLike}👍`;
@@ -241,9 +244,7 @@
                             });
                             // 校验 当前用户标记
                             let curUserMarks = res[d_mid];
-                            if(!curUserMarks) {
-                                return;
-                            }
+                            if(!curUserMarks) return;
                             curUserMarks = Object.values(curUserMarks); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
                             if(localMarks.length > 0) {
                                 // 返回本地记录中不存在于远程记录的元素（始终检验）
@@ -406,8 +407,8 @@
                 set: (name="", data={})=> {
                     try {
                         if(marker._utils._etc.isObject(data)) data = JSON.stringify(data);
-                        window.localStorage.setItem(name, data);
-                        console.log('localStorage saved');
+                        localStorage.setItem(name, data);
+                        console.log('localStorage saved', localStorage);
                     } catch (e) {
                         console.warn(e);
                         return null;
@@ -415,7 +416,22 @@
                 },
                 get: (name="")=> {
                     try {
-                        return window.localStorage.getItem(name);
+                        return localStorage.getItem(name);
+                    } catch (e) {
+                        console.warn(e);
+                        return null;
+                    }
+                },
+                gets: (name="", expires=0)=> {
+                    try {
+                        if(isNaN(expires) || typeof expires !== 'number') throw new Error('maxAge must be number of millseconds!');
+                        const ts = localStorage.getItem(name),
+                              ms = expires ? expires : parseInt(marker.init._conf.static.dataAlive*24*60*60);
+                        if(parseInt(ts)+ms < Date.now()) {
+                            localStorage.removeItem(name);
+                            return null;
+                        }
+                        return ts;
                     } catch (e) {
                         console.warn(e);
                         return null;
@@ -603,8 +619,8 @@
                 return valid_statu;
             },
             isMarkerAccessable: ()=> {
-                const mail = marker.data.user.mail;
-                return mail && mail !== "";
+                const {mail, mid} = marker.data.user;
+                return mail&&mail !== "" && mid&&mid !== "";
             },
             isMarkerUserUpdate: function() {
                 const {init: {_conf: {element: {commentInfo: {userMail:e_userMail}}}}, data: {user: {mail:d_mail}}, status:{isMarkerAccessable}} = marker;
@@ -990,7 +1006,7 @@
                 update_dom();
             },
             update: function(updObj={}, cbk=false, del=false) {
-                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set:setCookie, del:delCookie}, _storage: {set:setStorage, get:getStorage}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set:setCookie, del:delCookie}, _storage: {set:setStorage, gets:getStorage}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
                 // changes required
                 let {counts:d_counts} = marker.data.stat;
                 if(!isObject(updObj) || Object.keys(updObj).length<1) {
@@ -1055,7 +1071,7 @@
                         console.log(msg);
                     }else{
                         try {
-                            let ts_caches = getStorage(s_dataCaches);
+                            let ts_caches = getStorage(s_dataCaches, s_dataAlive);
                             ts_caches = ts_caches ? JSON.parse(ts_caches) : {};
                             ts_caches[mark_cname] = realtime_ts;
                             // record of localStorage(ts caches for del)
@@ -1151,7 +1167,7 @@
             },
         },
         get data() {
-            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get:getCookie}, _storage: {get:getStorage}}} = this;
+            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get:getCookie}, _storage: {gets:getStorage}}} = this;
             const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
                   stored = document.cookie.match(regExp) || [];
             let result = {};
