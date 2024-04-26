@@ -3,7 +3,7 @@
     const marker = {
         dom: {
             initiate: (marker)=> {
-                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote, likeMax:s_likeMax}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad}, _dom: {finder, valider}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {ctxMark:s_ctxMark, ctxMarked:s_ctxMarked, ctxQuote:s_ctxQuote, ctxCopy:s_ctxCopy, ctxNote:s_ctxNote, ctxCancel:s_ctxCancel, ctxLike:s_ctxLike, lineAnimate:s_lineAnimate, lineKeepTop:s_lineKeepTop, lineColor:s_lineColor, lineColors:s_lineColors, lineBold:s_lineBold, lineBoldMax:s_lineBoldMax, lineDegrees:s_lineDegrees, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid, md5Url:s_md5Url, dataAlive:s_dataAlive, dataPrefix:s_dataPrefix, avatar:s_avatar, useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote, likeMax:s_likeMax}, class: {line:c_line, tool:c_tool, toolIn:c_toolIn, avatars:c_avatars, mark:c_mark, done:c_done, note:c_note, quote:c_quote, copy:c_copy, close:c_close, like:c_like, underline:c_underline, processing:c_processing, disabled:c_disabled, }, element: {commentInfo: {userNick:e_userNick, userMail:e_userMail}, effectsArea:e_effectsArea}}}, data: {list:d_list, path:d_path, user: {mid:d_mid}, stat:{counts:d_counts}, _caches:d_caches,}, _utils: {_cookie: {get:getCookie, set:setCookie, del:delCookie}, _etc: {funValidator, dynamicLoad, isObject}, _dom: {finder, valider}}, status: {isMarkerUserUpdate, isMarkerAccessable}, mods: {fetch}} = marker;
                 // changes required
                 let _conf = marker.init._conf,
                     style = document.createElement('STYLE'),
@@ -42,31 +42,16 @@
                 toolsInside.appendChild(tool_close);
                 tools.appendChild(toolsInside);
                 _conf.element.tool = tools; //e_tool
-                if(s_lineAnimate) {
-                    style.textContent = `@keyframes ${c_underline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_processing}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
-                }
-                if(s_lineKeepTop) {
-                    style.textContent += `a.${c_line} .${c_tool}{padding:10px 0 50px!important;opacity:1!important;}a.${c_line}.${c_done} .${c_tool} .${c_note}{margin:0 0 10px 10px!important;}`;
-                }
+                if(s_lineAnimate) style.textContent = `@keyframes ${c_underline}{0%{background-size:0% ${s_lineBold}%;}100%{background-size:100% ${s_lineBold}%;}}@keyframes ${c_processing}{0%{transform:rotate(0deg)}100%{transform:rotate(360deg);}}`;
                 style.textContent += `
                     a.${c_line}.${c_done}{animation:none;-webkit-animation:none;transition:none;}
                     a.${c_line}:hover,a.${c_line}.${c_done}{background-size:100% ${s_lineBoldMax}%;}
                     a.${c_line}:hover{color:inherit!important;z-index:1!important;}
                     a.${c_line}{color:inherit;text-decoration:none!important;background:-webkit-linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background:linear-gradient(${s_lineDegrees}deg, ${s_lineColor} 0%, ${s_lineColors} 100%) no-repeat left 100%/0 ${s_lineBold}%;background-size:100% ${s_lineBold}%;transition:background-size .15s ease;animation:${c_underline} 1s 1 ease;-webkit-animation:${c_underline} 1s 1 ease;cursor:text;user-select:text;-webkit-user-drag:none;position:relative;}
                     a.${c_line}.${c_processing} .${c_tool},
-                    a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;}
-                    a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;transition:all .15s ease;font-family:auto;}
-                    body.dark a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
-                    body.dark a.${c_line} .${c_tool} .${c_note} label,
-                    body.dark a.${c_line} .${c_tool} .${c_note} input{color: white;}
-                    body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
-                    @media (prefers-color-scheme: dark) {
-                        a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
-                        a.${c_line} .${c_tool} .${c_note} label,
-                        a.${c_line} .${c_tool} .${c_note} input{color: white;}
-                        a.${c_line} .${c_tool} .${c_toolIn}{color: white;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
-                    }
-                    a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));background:-webkit-linear-gradient(90deg,rgb(245 247 249 / 88%) 0,rgb(255 255 255 / 100%));box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
+                    a.${c_line}:hover .${c_tool}{padding:10px 0 50px;opacity:1;z-index:1;}
+                    a.${c_line} .${c_tool}{padding-bottom:15px;position:absolute;top:0%;left:50%;transform:translate(-50%,-50%);opacity:0;z-index:-1;transition:all .15s ease;font-family:auto;}
+                    a.${c_line} .${c_tool} .${c_toolIn}{color:black;line-height:27px;font-size:11px;font-weight:normal;font-style:normal;white-space:nowrap;padding:0 5px;border:1px solid #fff;border-radius:5px;box-sizing:border-box;background:linear-gradient(0deg,#f5f7f9 0,#ffffff);background:-webkit-linear-gradient(90deg,#f5f7f9 0,#ffffff);box-shadow:rgba(0,0,0,0.12) 0 1px 18px;position:relative;user-select:none;-webkit-user-select:none;}
                     a.${c_line}.${c_processing} .${c_tool} .${c_note},
                     a.${c_line}.${c_done}:hover .${c_tool} .${c_note}{margin:0 0 10px 10px;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note}{position:absolute;bottom:100%;left:0;min-width:2em;max-width:100%;white-space:normal;padding: 5px 10px;color:gray;line-height:18px;font-weight:normal;margin:0px;transition:margin .15s linear;}
@@ -75,35 +60,40 @@
                     a.${c_line} .${c_tool} .${c_note} input,
                     a.${c_line} .${c_tool} .${c_note}:hover input{border-radius:50px;color:white;background:currentColor;box-shadow:inherit;/*border: 1px solid currentColor;background:inherit;*/}
                     a.${c_line} .${c_tool} .${c_note}:hover input{width: 100px;margin: auto 5px;padding: 2px 8px;color: inherit;border: 1px solid currentColor;background: transparent;}
-                    a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition: all .15s ease;border:none;}
+                    a.${c_line} .${c_tool} .${c_note} input{width: 0px;padding:0px;font-size: 10px;box-sizing: border-box;transition:all .15s ease;border:none;}
                     a.${c_line}.${c_done} .${c_tool} .${c_note} label{color:black;font-style: italic;}
                     a.${c_line} .${c_tool} i:first-of-type,
                     a.${c_line}.${c_done} .${c_tool} .${c_note} input{border-color:currentColor!important;display:none;}
-                    a.${c_line}.${c_done} .${c_tool} .${c_avatars}{margin:3px 5px 2px 10px;}
-                    a.${c_line} .${c_tool} .${c_avatars}{margin: 3px 5px 2px 0px;display: inline-block;line-height: normal;vertical-align: middle;}
-                    a.${c_line} .${c_tool} img:first-of-type{left:0;border:0;}
-                    a.${c_line} .${c_tool} img{max-width: 23px;border-radius: 50%;display:block;margin:0;border: 2px solid white;box-sizing: content-box;margin-left:-10px!important;/*position:relative;left:-10px;*/}
+                    a.${c_line}.${c_done} .${c_tool} .${c_avatars}{margin:2px 5px 3px 10px;}
+                    a.${c_line} .${c_tool} .${c_avatars}{margin: 3px 0px 2px 0px;display: inline-block;line-height: normal;vertical-align: middle;}
+                    a.${c_line} .${c_tool} .${c_avatars} img:first-of-type{left:0;border:0;}
+                    a.${c_line} .${c_tool} .${c_avatars} img{max-width: 23px;border-radius: 50%;display:block;margin:0;border: 2px solid white;box-sizing: content-box;margin-left:-10px!important;/*position:relative;left:-10px;*/}
                     a.${c_line} .${c_tool} i{font-style:normal;}
-                    a.${c_line} .${c_tool} i,
-                    a.${c_line} .${c_tool} img,
-                    a.${c_line} .${c_tool} span{display: inline-block;vertical-align: middle;margin:auto;}
+                    a.${c_line} .${c_tool} i, a.${c_line} .${c_tool} .${c_avatars} img,a.${c_line} .${c_tool} span{display: inline-block;vertical-align: middle;margin:auto;}
                     a.${c_line} .${c_tool} span:hover{font-weight:bold;}
-                    a.${c_line}.${c_disabled} .${c_tool} span,
-                    a.${c_line} .${c_tool} i,
-                    a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;pointer-events:none;}
+                    a.${c_line}.${c_disabled} .${c_tool} span, a.${c_line} .${c_tool} i, a.${c_line} .${c_tool} span.${c_disabled}{opacity:.75;pointer-events:none;}
                     a.${c_line} .${c_tool} i{opacity:.35;}
                     a.${c_line} .${c_tool} span{cursor:pointer;}
-                    a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:12%;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
+                    a.${c_line} .${c_tool} span.${c_close}::before,a.${c_line} .${c_tool} span.${c_close}::after{content:'';width:68%;height:2px;display:block;background:currentColor;position:inherit;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);margin:inherit;border:none;}
                     a.${c_line} .${c_tool} span.${c_close}::after{transform:translate(-50%,-50%) rotate(-45deg);}
-                    a.${c_line} .${c_tool} span.${c_close}:hover::before,a.${c_line} .${c_tool} span.${c_close}:hover::after{height:18%;}
                     a.${c_line}.${c_processing} .${c_tool} span.${c_close}{animation:${c_processing} linear 1s infinite;-webkit-animation:${c_processing} linear 1s infinite;pointer-events:none;}
-                    /*a.${c_line}.${c_processing} .${c_tool} span.${c_close},*/
                     a.${c_line} .${c_tool} span.${c_like}:hover,
                     a.${c_line} .${c_tool} span.${c_close}:hover{transform:scale(1.25);-webkit-transform:scale(1.25)}
                     a.${c_line} .${c_tool} span.${c_like},
-                    a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border-radius:50%;position:absolute;top:-5px;right:-5px;}
-                    a.${c_line} .${c_tool} span.${c_like}{width:auto;height:auto;font-weight:bold;font-size:10px;line-height:12px;padding:1px 5px;margin:-5px;border-radius:25px;background:limegreen;}
+                    a.${c_line} .${c_tool} span.${c_close}{width:10px;height:10px;color:white;background:${s_lineColor};padding:1px;border:2px solid;border-radius:50%;position:absolute;top:-7px;right:-7px;}
+                    a.${c_line} .${c_tool} span.${c_like}{width:auto;height:auto;font-size:10px;line-height:12px;padding:1px 5px;margin:-5px;border-radius:25px;background:limegreen;font-weight:bold;}
+                    body.dark a.${c_line} .${c_tool} .${c_avatars} img{opacity:1;border-color:#3a3a3a}
+                    body.dark a.${c_line} .${c_tool} span.${c_like},body.dark a.${c_line} .${c_tool} span.${c_close},body.dark a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
+                    body.dark a.${c_line} .${c_tool} .${c_note} label,body.dark a.${c_line} .${c_tool} .${c_note} input{color: lightgray;}
+                    body.dark a.${c_line} .${c_tool} .${c_toolIn}{color: lightgray;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
+                    @media (prefers-color-scheme: dark) {
+                        a.${c_line} .${c_tool} .${c_avatars} img{opacity:1;border-color:#3a3a3a}
+                        a.${c_line} .${c_tool} span.${c_like},a.${c_line} .${c_tool} span.${c_close},a.${c_line} .${c_tool} .${c_note}{color: #4a4a4a;}
+                        a.${c_line} .${c_tool} .${c_note} label,a.${c_line} .${c_tool} .${c_note} input{color: lightgray;}
+                        a.${c_line} .${c_tool} .${c_toolIn}{color: lightgray;border-color: #4a4a4a;background: -webkit-linear-gradient(90deg, #3a3a3a 0, #4a4a4a);background: linear-gradient(0deg, #3a3a3a 0, #4a4a4a);}
+                    }
                 `;
+                if(s_lineKeepTop) style.textContent += `a.${c_line} .${c_tool}{padding:10px 0 50px;opacity:1;z-index:1;}a.${c_line}.${c_done} .${c_tool} .${c_note}{margin:0 0 10px 10px;}`;
                 document.head.appendChild(style);
                 // fetch data.
                 fetch("", {
@@ -150,7 +140,7 @@
                             }
                             // 输出 所有用户标记
                             Object.keys(res).forEach(user=> {
-                                let userMarks = Object.values(res[user]); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
+                                let userMarks = Object.values(res[user]); // 重新索引数组对象（避免后端 mark_data 数组对象索引混乱
                                 // console.log(userMarks)
                                 if(!userMarks || userMarks==null) return;
                                 // compare curUserMid is curUser, then update currentUserCounts from remote
@@ -162,7 +152,7 @@
                                     Object.freeze(_conf.static);
                                 }
                                 userMarks.forEach(mark=> {
-                                    const {nick, text, date, uid, rid, note, like} = mark,
+                                    const {nick, text, date, uid, rid, note} = mark,
                                           isOtherUserMark = user !== d_mid;
                                     // console.log(user, mark);
                                     let frag_mark = marks.cloneNode(true),
@@ -197,17 +187,21 @@
                                     tool_avatar.alt = nick;
                                     tool_avatar.src = `${s_avatar}avatar/${user}?d=mp&s=100&v=1.3.10`;
                                     tool_avatars.appendChild(tool_avatar);
-                                    let multUserMarkContext = ` ${s_ctxMarked}`;
-                                    // like = Object.values(like); // 重新索引数组对象（避免手动删除 mark_data 索引混乱
-                                    if(like&&like.length>=1) {
-                                        const multUserMarkExtra = like.length>s_likeMax ? like.length - s_likeMax : "";
+                                    let multUserMarkContext = ` ${s_ctxMarked}`,
+                                        likes = mark.like;
+                                    if(isObject(likes)) {
+                                        console.warn(`confused(mixed) index of likes on mark#${rid}(should be typeof array)`, likes);
+                                        likes = Object.values(likes); // 重新索引数组（避免后端 like 数组索引混乱
+                                    }
+                                    if(likes&&likes.length>=1) {
+                                        const multUserMarkExtra = likes.length>s_likeMax ? likes.length - s_likeMax : "";
                                         multUserMarkContext = ` 等${multUserMarkExtra}人${s_ctxMarked}`;
                                         const avatar_fragment = document.createDocumentFragment();
-                                        for(let i=0;i<like.length;i++) {
+                                        for(let i=0;i<likes.length;i++) {
                                             if(i>=s_likeMax) break;
                                             const temp_avatar = new Image();
-                                            temp_avatar.alt = like[i];
-                                            temp_avatar.src = `${s_avatar}avatar/${like[i]}?d=mp&s=100&v=1.3.10`;
+                                            temp_avatar.alt = likes[i];
+                                            temp_avatar.src = `${s_avatar}avatar/${likes[i]}?d=mp&s=100&v=1.3.10`;
                                             avatar_fragment.appendChild(temp_avatar);
                                         }
                                         tool_avatars.appendChild(avatar_fragment);
@@ -222,12 +216,12 @@
                                     if(note&&note.length >=1) {
                                         tool_mark.nextElementSibling.remove(); // "|"
                                         finder(tool_note, "", 1, "label").textContent = note;
-                                        markedContext = nick;
+                                        // markedContext = nick;
                                     }else{
                                         tool_note.previousElementSibling.remove(); // "|"
                                         tool_note.remove();
                                         // additional like button only if not(noted) others mark
-                                        if(isOtherUserMark && isMarkerAccessable()) {
+                                        if(isOtherUserMark) { // && isMarkerAccessable()
                                             const tool_like = document.createElement('SPAN');
                                             tool_like.className = c_like;
                                             tool_like.title = `认同${s_ctxLike}👍`;
@@ -309,9 +303,7 @@
                             _outputMarkers();
                         }
                     }
-                }, (err)=> {
-                    console.warn(err); // load data from local cookies
-                });
+                }, (err)=>console.warn(err));
             },
         },
         _utils: {
@@ -408,21 +400,12 @@
                     try {
                         if(marker._utils._etc.isObject(data)) data = JSON.stringify(data);
                         localStorage.setItem(name, data);
-                        console.log('localStorage saved', localStorage);
                     } catch (e) {
                         console.warn(e);
                         return null;
                     }
                 },
-                get: (name="")=> {
-                    try {
-                        return localStorage.getItem(name);
-                    } catch (e) {
-                        console.warn(e);
-                        return null;
-                    }
-                },
-                gets: (name="", expires=0)=> {
+                get: (name="", expires=0)=> {
                     try {
                         if(isNaN(expires) || typeof expires !== 'number') throw new Error('maxAge must be number of millseconds!');
                         const ts = localStorage.getItem(name),
@@ -432,6 +415,14 @@
                             return null;
                         }
                         return ts;
+                    } catch (e) {
+                        console.warn(e);
+                        return null;
+                    }
+                },
+                _get: (name="")=> {
+                    try {
+                        return localStorage.getItem(name);
                     } catch (e) {
                         console.warn(e);
                         return null;
@@ -602,15 +593,15 @@
             isMarkerAvailable: (anonymous=false)=> {
                 let valid_statu = true;
                 if(!anonymous) {
-                    const commentInfo = marker.init._conf.element.commentInfo;
-                    const userinfo = Object.entries(commentInfo);
+                    const commentInfo = marker.init._conf.element.commentInfo,
+                          userinfo = Object.entries(commentInfo);
                     for(let i=0;i<userinfo.length;i++){
                         let key = userinfo[i][0],
                             val = userinfo[i][1];
-                        if(val==null){
+                        if(val==null) {
                             console.warn('Abort on '+key+': all commentInfo must be Specificed!', commentInfo);
                             valid_statu = false;
-                        }else if(val.value==''){
+                        }else if(val.value=='') {
                             console.warn(key+' required to be FullFilled to use marker.', val);
                             valid_statu = false;
                         }
@@ -1006,7 +997,7 @@
                 update_dom();
             },
             update: function(updObj={}, cbk=false, del=false) {
-                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set:setCookie, del:delCookie}, _storage: {set:setStorage, gets:getStorage}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
+                const {init: {_conf: {static: {apiUrl:s_apiUrl, dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataAlive:s_dataAlive, ctxMarked:s_ctxMarked}, class: {note:c_note}}}, data: {list:d_list, path:d_path}, _utils: {_cookie: {set:setCookie, del:delCookie}, _storage: {set:setStorage, get:getStorage}, _etc: {isObject, funValidator}, _dom: {finder}}, status: {_adjustPending}, mods: {fetch}} = marker;
                 // changes required
                 let {counts:d_counts} = marker.data.stat;
                 if(!isObject(updObj) || Object.keys(updObj).length<1) {
@@ -1167,7 +1158,7 @@
             },
         },
         get data() {
-            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get:getCookie}, _storage: {gets:getStorage}}} = this;
+            const {init: {_conf: {static: {dataPrefix:s_dataPrefix, dataCaches:s_dataCaches, dataCount:s_dataCount, userNick:s_userNick, userMail:s_userMail, userMid:s_userMid}, setter: {nick, mail, counts, pending, promised}}}, _utils: {_cookie: {get:getCookie}, _storage: {get:getStorage}}} = this;
             const regExp = new RegExp(`${s_dataPrefix}(.*?)=(.*?);`, 'g'),
                   stored = document.cookie.match(regExp) || [];
             let result = {};
