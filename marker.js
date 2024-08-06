@@ -120,8 +120,16 @@
                                 return;
                             }
                             let _eachMarks = (mark, user)=> {
-                                const {nick, text, date, uid, rid, note} = mark,
-                                      isOtherUserMark = user !== _d_mid;
+                                let {nick, text, date, uid, rid, note} = mark,
+                                    isOtherUserMark = user !== _d_mid;
+                                // URIError: URI malformed
+                                try {
+                                    if (nick) nick = decodeURIComponent(nick);
+                                    if (text) text = decodeURIComponent(text);
+                                    if (note) note = decodeURIComponent(note);
+                                } catch(err) {
+                                    console.log(err);
+                                }
                                 // console.log(user, mark);
                                 let frag_mark = marks.cloneNode(true),
                                     frag_tool = tools.cloneNode(true), 
@@ -137,7 +145,6 @@
                                     close_btn.remove(); //if(valider(close_btn)) 
                                 }
                                 // traversal context nodes
-                                // console.log(e_effectsArea, mark_index)
                                 if(!mark_paragraph.textContent.includes(text)){
                                     console.log(`mark_uid(${mark_index}) is diff with mark_paragraph record(perhaps content changed), traversal nodes on..`, e_effectsArea);
                                     const effectChildNodes = e_effectsArea.children;
@@ -545,16 +552,17 @@
                         return randomStr.substring(2, randomStr.length);
                     }
                 },
-                paramParser: function(obj, post=false) {
+                paramParser: function(obj, post=false, encode=true) {
                     if(post && marker._utils._etc.isObject(obj)) {
                         return obj;
                     }
                     let str = "";
-                    for(let key in obj){
-                        str += `${key}=${obj[key]}&`;
+                    for(let key in obj) {
+                        let encoder = encode ? encodeURIComponent(obj[key]) : obj[key]; //decodeURIComponent
+                        str += `${key}=${encoder}&`;
                     }
-                    str = str.substr(0,str.lastIndexOf("&"));
-                    return decodeURIComponent(str);
+                    str = str.substr(0, str.lastIndexOf("&"));
+                    return str;
                 },
                 ctxIndexer: (context, keyword)=> {
                     if(!context || !keyword) return;
@@ -590,17 +598,17 @@
                     }
                     return exec ? fn.apply(this.arguments) : true;
                 },
-                argsRewriter: function(args={}, presets={}, callback=false) {
+                argsRewriter: function(_args={}, presets={}, callback=false) {
                     try {
                         const {_utils: {_etc: {assert, funValidator}}} = marker;
-                        assert(Object.prototype.toString.call(args)==='[object Object]', 'invalid arguments provided!');
-                        // rewrite conf
-                        marker.init.prototype._singleton_conf._rewriter(args, presets);
+                        assert(Object.prototype.toString.call(_args)==='[object Object]', 'invalid arguments provided!');
+                        // rewrite conf with merge on
+                        const args_ = marker.init.prototype._singleton_conf._rewriter(_args, presets, true);
                         if(!funValidator(callback)){
-                            return args;
+                            return args_;
                         }
                         // callback returns
-                        callback(args);
+                        callback(args_);
                     } catch (error) {
                         console.log(error);
                     }
@@ -774,8 +782,10 @@
             },
         },
         mods: {
-            mark: function(){
-                const {init: {_conf: {static: {dataMin:s_dataMin, ctxMark:s_ctxMark, ctxMarkMax:s_ctxMarkMax}, class: {line:c_line, mark:c_mark, disabled:c_disabled}, element: {line:e_line, tool:e_tool, effectsArea:e_effectsArea}}}, _utils: {_dom: {finder}, _diy: {strGenerator}}, status: {isMarkerSelectable, isMarkerReachedMax, isNodeMarkAble, isNodeMarkDone}, mods: {close}} = marker;
+            mark: function(e){
+                const {init: {_conf: {static: {dataMin:s_dataMin, ctxMark:s_ctxMark, ctxMarkMax:s_ctxMarkMax}, class: {line:c_line, mark:c_mark, disabled:c_disabled}, element: {line:e_line, tool:e_tool, effectsArea:e_effectsArea}}}, _utils: {_event: {get:getEvent, getTarget}, _dom: {finder}, _diy: {strGenerator}}, status: {isMarkerSelectable, isMarkerReachedMax, isNodeMarkAble, isNodeMarkDone}, mods: {close}} = marker;
+                e = getEvent(e);
+                e.preventDefault();
                 let that = this.toString ? this : window.getSelection;
                 const selectedText = that.toString(),
                       selectedLen = selectedText.length,
@@ -1096,8 +1106,8 @@
                 fetch(s_apiUrl, {
                     'rid': rid,
                     'uid': uid,
-                    "text": text,
-                    "note": note,
+                    "text": encodeURIComponent(text),
+                    "note": encodeURIComponent(note),
                     "like": like,
                     'ts': realtime_ts,
                 }, (res)=> {
@@ -1138,8 +1148,8 @@
                     'sse': 0,
                     'del': 0,
                     'ts': 0,
-                    "nick": d_nick,
-                    "mail": d_mail,
+                    "nick": encodeURIComponent(d_nick),
+                    "mail": decodeURIComponent(d_mail),
                     'pid': s_postId,
                 }, (obj_)=> {
                     const params = '&'+paramParser(obj_);
@@ -1184,10 +1194,19 @@
                             console.debug('SSE Open Connected.');
                         });
                         eventSource.addEventListener('message', function (event) {
-                            const eventData = JSON.parse(event.data);
-                            eventData.eventId = event.lastEventId;
-                            console.debug('Reciving SSE Data..', event);
-                            if(funValidator(cbk)) cbk(eventData); // `${event.lastEventId}:{${event.data}}`
+                            // if (!event.data) {
+                            //     console.log('invalid eventData', event.data);
+                            //     return;
+                            // }
+                            try {
+                                const eventData = JSON.parse(event.data);
+                                if (eventData == null) throw new Error('invalid eventData');
+                                eventData.eventId = event.lastEventId;
+                                console.debug('Reciving SSE Data..', event);
+                                if(funValidator(cbk)) cbk(eventData); // `${event.lastEventId}:{${event.data}}`
+                            } catch(err) {
+                                console.log(err);
+                            }
                         });
                         eventSource.addEventListener('error', function (event) {
                             console.debug(`SSE Error Closed. (statu: ${event.target.readyState})`, event);
@@ -1220,7 +1239,15 @@
                     const {init: {_conf: {static: {useNote:s_useNote, useCopy:s_useCopy, useQuote:s_useQuote}, class: {close:c_close, mark:c_mark, note:c_note, copy:c_copy, quote:c_quote, like:c_like}, element: {effectsArea:e_effectsArea}}}, _utils: {_closure: {debouncer}, _dom: {clicker}, _event: {add:addEvent}}, status: {isMarkerAvailable}, mods: {mark, down, note, copy, quote, close}} = marker; // _event
                     if(!isMarkerAvailable()) throw new Error('marker unavailable, register init failed..');
                     // bind events
-                    addEvent(e_effectsArea, 'mouseup', debouncer(mark.bind(window.getSelection()), 100)); // addEvent this enviroument changed!!
+                    const pointerupEvents = debouncer(mark.bind(window.getSelection()), 100);
+                    addEvent(e_effectsArea, 'pointerup', pointerupEvents); // addEvent this enviroument changed!!
+                    // const contextmenu_ = (e)=> {
+                    //     e.preventDefault();
+                    //     pointerupEvents();
+                    // };
+                    // addEvent(e_effectsArea, 'contextmenu', contextmenu_);  // moblie events
+                    // addEvent(e_effectsArea, 'select', contextmenu_);  // moblie events
+                    
                     clicker(e_effectsArea, c_mark, debouncer((t)=>down(t)));
                     clicker(e_effectsArea, c_like, debouncer((t)=>down(t, false)));
                     clicker(e_effectsArea, c_close, debouncer((t)=>close(t, true), 150));
@@ -1362,27 +1389,28 @@
                     };
                 return {
                     publicDefault: Object.create(null),
-                    _rewriter: function fn(conf=this.publicDefault, opts=presetConfs) {
-                        if(!marker._utils._etc.isObject(opts)) return;
-                        for(const [key, val] of Object.entries(opts)){
-                            // back-write (mark non-existent property)
-                            const custom_conf = conf[key];
-                            if(Array.isArray(val)){
-                                if(Array.isArray(custom_conf)){
-                                    conf[key] = custom_conf.concat(val);
+                    _rewriter: function fn(rewrites=this.publicDefault, presets=presetConfs, merge=false) {
+                        if (!marker._utils._etc.isObject(presets)) return;
+                        for (const property in rewrites) {
+                            if (!rewrites.hasOwnProperty(property)) continue;
+                            const rewrite_conf = rewrites[property];
+                            if (marker._utils._etc.isObject(rewrite_conf) && Reflect.ownKeys(rewrite_conf).length === 0) continue;
+                            if (marker._utils._etc.isObject(rewrite_conf)) {
+                                if (merge) {
+                                    // merge both of {rewrites} and {presets}
+                                    if (!marker._utils._etc.isObject(presets[property])) {
+                                        presets[property] = {};
+                                    }
+                                    presets[property] = fn(rewrite_conf, presets[property]);
                                 }else{
-                                    let _val = custom_conf ? custom_conf : val;
-                                    conf[key] = custom_conf ? val.concat(_val.toString().split(",")) : _val;
+                                    // rewrite only if {rewrites} exists in {presets}!!!
+                                    presets[property] = fn(rewrite_conf, presets[property] || {}); //this.confRewriter
                                 }
-                            }else{
-                                conf[key] ??= val; //conf[key] ||= val;
+                            } else {
+                                presets[property] = rewrite_conf;
                             }
-                            // recursion-loop (use fn call-stack for recursion-func)
-                            fn.apply(this, [custom_conf, val]);
                         }
-                        opts = presetConfs = null; // clear closure recycle-quotes
-                        // Object.freeze(conf.static); // 冻结 conf 对象 static 成员
-                        return conf;
+                        return presets;
                     },
                 };
             }(),
