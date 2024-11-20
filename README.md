@@ -4,7 +4,7 @@ a local-storage(php based) javascript api marking-off plugin.
 #### 功能简介
 
 - 多人划线标记（多评论系统共用）
-- 划线文本引用、复制、注释（他人非注释标记可点赞）
+- 划线文本引用、复制、注释、点赞
 - 用户本地浏览器 + 远程服务端双校验
 - 本地储存（localStorage+Cookie）验证记录
 - 大量自定义初始化参数（文本、元素、class..）
@@ -66,8 +66,13 @@ new marker.init();
 | ctxCopied | String | 标记已复制文本 | 默认 `已复制` |
 | ctxQuote | String | 标记引用文本 | 默认 `引用` |
 | ctxQuoted | String | 标记已引用文本 | 默认 `已引用` |
-| ctxLike | String | 标记点赞文本 | 默认 `+1` |
 | ctxCancel | String | 取消标记文本 | 默认 `取消选中/删除` |
+| ctxLike | String | 标记点赞文本 | 默认 `+1` |
+| ctxLiked | String | 取消点赞文本 | 默认 `-1` |
+|  |  |  |  |
+| userNick | String | Cookie 用户名前缀 | 默认 `marker_userNick` |
+| userMail | String | Cookie 邮箱前缀 | 默认 `marker_userMail` |
+| userMid | String | Cookie 邮箱md5前缀 | 默认 `marker_userMid` |
 
 #### class-> 静态参数
 
