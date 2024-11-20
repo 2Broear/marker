@@ -22,6 +22,7 @@ a local-storage(php based) javascript api marking-off plugin.
 ```javascript
 new marker.init();
 ```
+注意：mark.php中的`require_once( '../../../../../wp-load.php' )`路径需要根据需要调整。
 
 ### 初始化参数（可选）
 初始化时，可携带部分对象参数以重载默认配置，常用配置项如下列表所示：
